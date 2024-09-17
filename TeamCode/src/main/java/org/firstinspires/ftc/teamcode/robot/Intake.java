@@ -107,8 +107,51 @@ public class Intake {
         public class TiltZero implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
+                tilt.setPosition(0.5);                                                              // TODO: Set to actual tilt position
                 return false;
             }
+        }
+
+        public class ClawForward implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                tilt.setPosition(0);                                                                // TODO: Set to actual tilt position
+                return false;
+            }
+        }
+
+        public class SpinnerForward implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                tilt.setPosition(1);                                                                // TODO: Set to actual tilt position
+                return false;
+            }
+        }
+
+        public class TiltPosition implements Action {
+            float tiltPos;
+            public boolean run(@NonNull TelemetryPacket packet) {
+                tilt.setPosition(tiltPos);
+                return false;
+            }
+        }
+
+        public Action zero() {
+            return new TiltZero();
+        }
+
+        public Action clawForward() {
+            return new ClawForward();
+        }
+
+        public Action spinnerForward() {
+            return new SpinnerForward();
+        }
+
+        public Action tiltPosition(float pos) {
+            TiltPosition tiltAction = new TiltPosition();
+            tiltAction.tiltPos = pos;
+            return tiltAction;
         }
     }
 
