@@ -104,6 +104,12 @@ public class Intake {
             tilt = hwMap.get(Servo.class, "tilt");                                       // TODO: Set to actual hwMap deviceName
         }
 
+        public class TiltZero implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                return false;
+            }
+        }
     }
 
 }
