@@ -25,9 +25,23 @@ public class Lift {
     private DcMotorEx leftExtension;
     private DcMotorEx rightExtension;
 
-    // TODO: hwmap
+    public Lift(HardwareMap hwMap) {
+        leftPivot = hwMap.get(DcMotorEx.class, "left_pivot");                                       // TODO: Set to actual hwMap deviceName
+        rightPivot = hwMap.get(DcMotorEx.class, "right_pivot");                                     // TODO: Set to actual hwMap deviceName
+        leftExtension = hwMap.get(DcMotorEx.class, "left_slide");                                   // TODO: Set to actual hwMap deviceName
+        rightExtension = hwMap.get(DcMotorEx.class, "left_slide");                                  // TODO: Set to actual hwMap deviceName
+
+        leftPivot.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+    }
 
     // TODO: Define Actions
+    public class Preset1 implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            return false;
+        }
+    }
 
     // TODO: Wrap Actions as functions
 
