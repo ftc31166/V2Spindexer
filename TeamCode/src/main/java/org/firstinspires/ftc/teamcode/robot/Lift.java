@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 // Class for lift Actions
 public class Lift {
+
+    // test
     private DcMotorEx leftPivot;
     private DcMotorEx rightPivot;
 
