@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.robot.Lift;
 
 /*
  * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
@@ -30,6 +32,9 @@ import org.firstinspires.ftc.teamcode.Drawing;
 public class AutonBlue extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;
+
+    Intake intake = new Intake(hardwareMap);
+    Lift lift = new Lift(hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -48,20 +53,23 @@ public class AutonBlue extends LinearOpMode {
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
-            // Reset the tracking if the user requests it
-            if (gamepad1.y) {
-                myOtos.resetTracking();
-            }
+            Pose2D startPos = new Pose2d(36, 64, 3*Math.PI/2);
+            SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, startPos);
 
-            // Re-calibrate the IMU if the user requests it
-            if (gamepad1.x) {
-                myOtos.calibrateImu();
-            }
+            TrajectoryActionBuilder block1 = drive.actionBuilder(startPos)
+                    .strafeTo(new Vector2d(48, 36))
+                    .build();
+            TrajectoryActionBuilder bucket1 = block1.fresh();
+                    .strafeToLinearHeading(new Vector2d(56, 56), Math.toRadians((225)))
+                    .build();
 
-            // Inform user of available controls
-            telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
-            telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
-            telemetry.addLine();
+            TrajectoryActionBuilder block2 = drive.actionBuilder(startPos)
+                    .strafeTo(new Vector2d(48, 36))
+                    .build();
+            TrajectoryActionBuilder block3 = drive.actionBuilder(startPos)
+                    .strafeTo(new Vector2d(48, 36))
+                    .build();
+
 
             // Log the position to the telemetry
             telemetry.addData("X coordinate", pos.x);
