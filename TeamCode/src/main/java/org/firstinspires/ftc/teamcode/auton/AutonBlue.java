@@ -7,7 +7,12 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,8 +20,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Drawing;
-import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.SparkFunOTOSDrive;
+import org.firstinspires.ftc.teamcode.robot.Claw;
 import org.firstinspires.ftc.teamcode.robot.Lift;
+import org.firstinspires.ftc.teamcode.robot.Tilt;
 
 /*
  * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
@@ -33,8 +40,10 @@ public class AutonBlue extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;
 
-    Intake intake = new Intake(hardwareMap);
+    Claw claw = new Claw(hardwareMap);
     Lift lift = new Lift(hardwareMap);
+
+    Tilt tilt = new Tilt(hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -53,22 +62,37 @@ public class AutonBlue extends LinearOpMode {
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
-            Pose2D startPos = new Pose2d(36, 64, 3*Math.PI/2);
+            Pose2d startPos = new Pose2d(36, 64, 3*Math.PI/2);
             SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, startPos);
 
-            TrajectoryActionBuilder block1 = drive.actionBuilder(startPos)
-                    .strafeTo(new Vector2d(48, 36))
-                    .build();
-            TrajectoryActionBuilder bucket1 = block1.fresh();
-                    .strafeToLinearHeading(new Vector2d(56, 56), Math.toRadians((225)))
-                    .build();
+            TrajectoryActionBuilder bucket0 = drive.actionBuilder(startPos)
+                    .strafeToLinearHeading(new Vector2d(56, 56), Math.toRadians((225)));
 
-            TrajectoryActionBuilder block2 = drive.actionBuilder(startPos)
-                    .strafeTo(new Vector2d(48, 36))
-                    .build();
-            TrajectoryActionBuilder block3 = drive.actionBuilder(startPos)
-                    .strafeTo(new Vector2d(48, 36))
-                    .build();
+            TrajectoryActionBuilder block1 = bucket0.fresh()
+                    .strafeToLinearHeading(new Vector2d(48, 36), Math.toRadians((270)));
+
+            TrajectoryActionBuilder bucket1 = block1.fresh()
+                    .strafeToLinearHeading(new Vector2d(56, 56), Math.toRadians((225)));
+
+
+            TrajectoryActionBuilder block2 = bucket1.fresh()
+                    .strafeToLinearHeading(new Vector2d(58, 36), Math.toRadians((270)));
+
+            TrajectoryActionBuilder bucket2 = block2.fresh()
+                    .strafeToLinearHeading(new Vector2d(56, 56), Math.toRadians((225)));
+
+            TrajectoryActionBuilder block3 = bucket2.fresh()
+                    .strafeToLinearHeading(new Vector2d(63, 36), Math.toRadians((290)));
+
+            TrajectoryActionBuilder bucket3 = block3.fresh()
+                    .strafeToLinearHeading(new Vector2d(56, 56), Math.toRadians((225)));
+
+            TrajectoryActionBuilder park = bucket3.fresh()
+                    .strafeToLinearHeading(new Vector2d(-36, 60), Math.toRadians((270)))
+                    .strafeTo(new Vector2d(-36, 64));
+
+
+
 
 
             // Log the position to the telemetry
@@ -83,6 +107,49 @@ public class AutonBlue extends LinearOpMode {
 
             // Update the telemetry on the driver station
             telemetry.update();
+
+            Actions.runBlocking(claw.closeClaw());
+
+            if (isStopRequested()) return;
+
+            Actions.runBlocking(
+                    new SequentialAction(
+                            bucket0.build(),
+                            lift.armPreset("Bucket High"),
+                            tilt.tiltPreset("Bucket High"),
+                            claw.openClaw(),
+
+                            block1.build(),
+                            lift.armPreset("Floor"),
+                            tilt.tiltPreset("Floor"),
+                            claw.closeClaw(),
+                            bucket1.build(),
+                            lift.armPreset("Bucket High"),
+                            tilt.tiltPreset("Bucket High"),
+                            claw.openClaw(),
+
+                            block2.build(),
+                            lift.armPreset("Floor"),
+                            tilt.tiltPreset("Floor"),
+                            claw.closeClaw(),
+                            bucket2.build(),
+                            lift.armPreset("Bucket High"),
+                            tilt.tiltPreset("Bucket High"),
+                            claw.openClaw(),
+
+                            block3.build(),
+                            lift.armPreset("Floor"),
+                            tilt.tiltPreset("Floor"),
+                            claw.closeClaw(),
+                            bucket3.build(),
+                            lift.armPreset("Bucket High"),
+                            tilt.tiltPreset("Bucket High"),
+                            claw.openClaw(),
+
+                            park.build()
+                    )
+            );
+
         }
     }
 

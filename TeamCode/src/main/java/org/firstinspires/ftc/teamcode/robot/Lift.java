@@ -25,10 +25,44 @@ public class Lift {
     private DcMotorEx leftExtension;
     private DcMotorEx rightExtension;
 
-    // TODO: hwmap
+    public Lift(HardwareMap hwMap) {
+        leftPivot = hwMap.get(DcMotorEx.class, "leftPivot");                             // TODO: Set to actual hwMap deviceName
+    }
 
     // TODO: Define Actions
+    public class ArmPreset implements Action {
+        String preset;
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (preset.equals("Bucket High"))
+            {
+                // TODO
+            }
+            else if (preset.equals("Bucket Low"))
+            {
+                // TODO
+            }
+            else if (preset.equals("Bar High"))
+            {
+                // TODO
+            }
+            else if (preset.equals("Bar Low"))
+            {
+                // TODO
+            }
+            else if (preset.equals("Floor"))
+            {
+                // TODO
+            }
+
+            return false;
+        }
+    }
 
     // TODO: Wrap Actions as functions
+    public Action armPreset(String pos) {
+        Lift.ArmPreset liftAction = new Lift.ArmPreset();
+        liftAction.preset = pos;
+        return liftAction;
+    }
 
 }
