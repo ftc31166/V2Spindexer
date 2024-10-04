@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -27,6 +28,16 @@ public class Lift {
 
     public Lift(HardwareMap hwMap) {
         leftPivot = hwMap.get(DcMotorEx.class, "leftPivot");                             // TODO: Set to actual hwMap deviceName
+        rightPivot = hwMap.get(DcMotorEx.class, "rightPivot");                           // TODO: Set to actual hwMap deviceName
+        leftExtension = hwMap.get(DcMotorEx.class, "leftExtension");                     // TODO: Set to actual hwMap deviceName
+        rightExtension = hwMap.get(DcMotorEx.class, "rightExtension");                   // TODO: Set to actual hwMap deviceName
+
+        leftPivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);                            // TODO: Set to actual hwMap deviceName
+        rightPivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);                           // TODO: Set to actual hwMap deviceName
+        leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);                        // TODO: Set to actual hwMap deviceName
+        rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);                       // TODO: Set to actual hwMap deviceName
+
+
     }
 
     // TODO: Define Actions
