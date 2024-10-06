@@ -6,6 +6,14 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+/*
+1 preloaded specimen
+get three color samples from sample zone into observation
+put them on the long bar
+get da human player specimen
+go to other side of field and score three yellows into high bucket
+ */
+
 public class MeepMeepTetsing {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
