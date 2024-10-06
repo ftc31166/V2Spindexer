@@ -15,8 +15,9 @@ public class MeepMeepTetsing {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(24, -63, 0))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(23.5, -60, 0))
                 .strafeTo(new Vector2d(40,69))
+                /*
                 .turn(Math.toRadians(90))
                 .strafeTo(new Vector2d(-50,49))
                 .turn(Math.toRadians(420))
@@ -24,6 +25,7 @@ public class MeepMeepTetsing {
                 .turn(Math.toRadians(-270))
                 .strafeTo(new Vector2d(0,0))
                 .turn(Math.toRadians(2))
+                 */
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
