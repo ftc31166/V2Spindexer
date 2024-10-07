@@ -23,17 +23,21 @@ public class MeepMeepTetsing {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(23.5, -60, 0))
-                .strafeTo(new Vector2d(40,69))
-                /*
-                .turn(Math.toRadians(90))
-                .strafeTo(new Vector2d(-50,49))
-                .turn(Math.toRadians(420))
-                .strafeTo(new Vector2d(30,-69))
-                .turn(Math.toRadians(-270))
-                .strafeTo(new Vector2d(0,0))
-                .turn(Math.toRadians(2))
-                 */
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(23.5, -60, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(10,-55),Math.toRadians(90))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(23,-47),Math.toRadians(45))
+                .waitSeconds(2)
+                .turnTo(Math.toRadians(-30))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(33,-40),Math.toRadians(33))
+                .waitSeconds(2)
+                .turnTo(Math.toRadians(-45))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(40,-35), Math.toRadians(22))
+                .waitSeconds(2)
+                .turnTo(Math.toRadians(-77))
+                .waitSeconds(2)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
