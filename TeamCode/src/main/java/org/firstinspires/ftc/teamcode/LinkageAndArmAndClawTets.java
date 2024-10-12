@@ -52,11 +52,16 @@ public class LinkageAndArmAndClawTets extends LinearOpMode{
             else{
                 pressing=false;
             }
+
             int error1 = (target - arm.getCurrentPosition());
             arm.setPower(-error1 * 0.015);
             linkage1.setPosition(extendo);
             linkage1.setPosition(extendo);
             claw.setPosition(clawpos);
+            telemetry.addData("armtarget", target);
+            telemetry.addData("extendo", extendo);
+            telemetry.addData("clawpos", clawpos);
+            telemetry.update();
         }
 
     }
