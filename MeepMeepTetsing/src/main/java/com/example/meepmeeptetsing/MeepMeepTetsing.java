@@ -56,17 +56,17 @@ public class MeepMeepTetsing {
         Action trajectory2=myBot.getDrive().actionBuilder(new Pose2d(23.5, -60, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(-10,-47),Math.toRadians(90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-48,-48),Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-48,-55),Math.toRadians(90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-50,-55),Math.toRadians(38))
+                .strafeToLinearHeading(new Vector2d(-55,-55),Math.toRadians(45))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-58,-48),Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-58,-52),Math.toRadians(90))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-58,-58),Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-56,-56),Math.toRadians(45))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-63,-43), Math.toRadians(112.5))
+                .strafeToLinearHeading(new Vector2d(-57,-43), Math.toRadians(120))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(-58,-58),Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-56,-56),Math.toRadians(45))
                 .build();
         myBot.runAction(trajectory2);
 
