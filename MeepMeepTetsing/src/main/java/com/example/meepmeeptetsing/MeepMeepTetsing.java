@@ -1,5 +1,6 @@
 package com.example.meepmeeptetsing;
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
@@ -22,8 +23,7 @@ public class MeepMeepTetsing {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
-
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(23.5, -60, Math.toRadians(90)))
+        Action trajectory1=myBot.getDrive().actionBuilder(new Pose2d(23.5, -60, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(10,-47),Math.toRadians(90))
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(23,-47),Math.toRadians(45))
@@ -52,7 +52,23 @@ public class MeepMeepTetsing {
                 .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(10,-43),Math.toRadians(90))
                 .waitSeconds(1)
-                .build());
+                .build();
+        Action trajectory2=myBot.getDrive().actionBuilder(new Pose2d(23.5, -60, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-10,-47),Math.toRadians(90))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-48,-48),Math.toRadians(90))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-50,-55),Math.toRadians(38))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-58,-48),Math.toRadians(90))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-58,-58),Math.toRadians(45))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-63,-43), Math.toRadians(112.5))
+                .waitSeconds(1)
+                .strafeToLinearHeading(new Vector2d(-58,-58),Math.toRadians(45))
+                .build();
+        myBot.runAction(trajectory2);
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
                 .setDarkMode(true)
