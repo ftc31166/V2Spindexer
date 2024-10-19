@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class SetZero extends LinearOpMode {
     @Override
     public void runOpMode() {
+        double kP = 0.015;
+        int hangTarget = 0;
         DcMotor hang = hardwareMap.dcMotor.get("hang");
         Servo servo1 = hardwareMap.servo.get("servo1");
         double targetPos = 0;
@@ -18,6 +20,11 @@ public class SetZero extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
+            if (gamepad1.left_bumper) {
+                hangTarget += 15;
+            } else if (gamepad1.right_bumper && hangTarget > 15) {
+                hangTarget -= 15;
+            }
             if (gamepad1.left_bumper) {
                 servo1.setPosition(1);
                 telemetry.addLine("servo up");
@@ -38,6 +45,11 @@ public class SetZero extends LinearOpMode {
                 telemetry.addLine("hang down");
                 telemetry.update();
             }
+            int hangError = hangTarget - hang.getCurrentPosition();
+            hang.setPower(kP * hangError);
+            telemetry.addData("hang pos", hang.getCurrentPosition());
+            telemetry.addData("hang target", hangTarget);
+            telemetry.update();
 
         }
 
