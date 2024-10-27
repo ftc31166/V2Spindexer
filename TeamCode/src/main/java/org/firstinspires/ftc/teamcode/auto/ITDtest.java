@@ -20,7 +20,6 @@ public final class ITDtest extends LinearOpMode {
         Actions.runBlocking(
                 drive.actionBuilder(beginPose)
                         .splineToLinearHeading(new Pose2d(10, 30, Math.toRadians(90)), Math.toRadians(0))
-                        .waitSeconds(0.5)
                         .setTangent(Math.toRadians(0))
                         .splineToLinearHeading(new Pose2d(40, 30, Math.toRadians(90)), Math.toRadians(90))
                         .splineToLinearHeading(new Pose2d(55, 50, Math.toRadians(90)), Math.toRadians(-90))
