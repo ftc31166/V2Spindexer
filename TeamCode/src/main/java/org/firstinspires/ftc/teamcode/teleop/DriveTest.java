@@ -29,8 +29,8 @@ public class DriveTest extends LinearOpMode {
 
         leftPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftPivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightPivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitForStart();
 
         if (isStopRequested()) return;
