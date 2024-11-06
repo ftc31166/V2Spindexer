@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.rr.Utils;
+import org.firstinspires.ftc.teamcode.subsystems.Utils;
 
 @Config
 public class Lift {

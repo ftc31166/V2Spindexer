@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.hardware.rev.RevTouchSensor;
@@ -9,42 +8,39 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-
-@Config
 public class PivotMP {
 
     private DcMotor lPivot, rPivot;
 
-    private RevTouchSensor reset;
-
+    public static double p = 3, i = 0, d = 0.1, k = 0.2;
     PIDController controller = new PIDController(p, i, d);
+
     TrapezoidProfile profile;
     TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2*Math.PI, 8*Math.PI);
-    public static double p = 3, i = 0, d = 0.1, k = 0.2;
 
-    public double tpr = (537.7*(80/30))/(2*Math.PI);
-    public boolean flag = false;
+    public double tpr = (537.7*(24/60))/(2*Math.PI); // motor tick rate * (input gear/output gear)/2pi
 
-    public static double vertAngle = 117, backUpAngle = 130, specimen = 70;
+    public boolean resetFlag = false;
 
-    public double updateCurrentAngle(double current) {
-        if (reset.isPressed()) {
+    public static double vertAngle = 90, backUpAngle = 110, specimen = 70;
+
+    public double updateCurrentAngle(double current, boolean rFlag) { // if slide reset, return 0, otherwise, return angle in rad
+        if (rFlag) {
             rPivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            flag = true;
+            resetFlag = true;
             return  0;
         } else {
-            flag = false;
+            resetFlag = false;
             return  current/tpr;
         }
     }
 
-    double angle = 0, langle = angle, aVelocity = 0;
+    public double angle = 0, langle = angle, aVelocity = 0; // langle is last angle, aVelocity is ang. vel.
 
-    public PivotMP(HardwareMap hardwareMap) {
-        rPivot = hardwareMap.dcMotor.get("rPivot");
-        lPivot = hardwareMap.dcMotor.get("lPivot");
+    public PivotMP(HardwareMap hardwareMap, String rightPivot, String leftPivot) {
+        rPivot = hardwareMap.dcMotor.get(rightPivot);
+        lPivot = hardwareMap.dcMotor.get(leftPivot);
 
         rPivot.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -54,23 +50,24 @@ public class PivotMP {
         lPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        reset = hardwareMap.get(RevTouchSensor.class, "reset");
+        //reset = hardwareMap.get(RevTouchSensor.class, "reset");
 
         profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(0, 0));
     }
 
-    public double targetAngle = 0, power = 0, lastPower = power, lta = targetAngle, indexedPosition = 0;
+    public double targetAngle = 0, power = 0, lastPower = power, lta = targetAngle, indexedPosition = 0; // lta is last target angle
 
     public void setTargetAngle(double targetAngle) {
         this.targetAngle = Math.toRadians(targetAngle);
     }
 
+
     ElapsedTime fullTimer = new ElapsedTime();
     ElapsedTime velTimer = new ElapsedTime();
 
-    public void update() {
+    public void update(boolean rFlag) {
 
-        angle = Math.abs(updateCurrentAngle(rPivot.getCurrentPosition()));
+        angle = Math.abs(updateCurrentAngle(rPivot.getCurrentPosition(), rFlag));
 
         if (targetAngle != lta) {
             profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(targetAngle, 0), new TrapezoidProfile.State(angle, aVelocity));
@@ -83,9 +80,10 @@ public class PivotMP {
 
         power = controller.calculate(angle) + (k * Math.cos(targetAngle));
 
-        if (flag && Utils.valInThresh(0, lastPower, 0) && targetAngle == 0) {
-            apply(0);
-        } else if (Utils.valInThresh(power, lastPower, 0.01)) {
+        if (Utils.valInThresh(power, lastPower, 0.001)) {
+            if (indexedPosition == 0 && resetFlag) {
+                power = 0;
+            }
             apply(power);
             lastPower = power;
         }
@@ -106,3 +104,4 @@ public class PivotMP {
         return Math.abs(Math.toDegrees(targetAngle)-Math.toDegrees(angle)) < 5;
     }
 }
+

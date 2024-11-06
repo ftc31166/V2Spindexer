@@ -17,8 +17,8 @@ public class DriveTest extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
-        DcMotor leftPivotMotor = hardwareMap.dcMotor.get("leftExtendMotor");
-        DcMotor rightPivotMotor = hardwareMap.dcMotor.get("rightExtendPMotor");
+        DcMotor leftPivotMotor = hardwareMap.dcMotor.get("leftExtension");
+        DcMotor rightPivotMotor = hardwareMap.dcMotor.get("rightExtension");
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -36,9 +36,9 @@ public class DriveTest extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-            double rx = gamepad1.right_stick_x;
+            double rx = -gamepad1.right_stick_x;
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
@@ -46,8 +46,8 @@ public class DriveTest extends LinearOpMode {
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator;
             double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
+            double frontRightPower = (y + x - rx) / denominator;
+            double backRightPower = (y - x - rx) / denominator;
 
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);

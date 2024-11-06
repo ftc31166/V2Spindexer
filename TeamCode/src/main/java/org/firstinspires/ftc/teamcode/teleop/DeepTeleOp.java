@@ -1,33 +1,32 @@
-
-/*package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//import org.firstinspires.ftc.teamcode.robot.Drive;
-import org.firstinspires.ftc.teamcode.robot.Claw;
-import org.firstinspires.ftc.teamcode.robot.Lift;
+//import org.firstinspires.ftc.teamcode.shhh.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.subsystems.MainArm;
 
-@TeleOp(name = "DeepTeleOp V1")
+@TeleOp(name = "DeepTeleOp")
 public class DeepTeleOp extends OpMode {
 
-    //public Drive drive;
-    public Claw claw;
-    public Lift arm;
+    public Drive drive; public MainArm arm; //public Arm deposit;
 
     @Override
     public void init() {
-        claw = new Claw(hardwareMap);
-        arm = new Lift(hardwareMap, true);
+        drive = new Drive(hardwareMap, "frontLeftMotor", "backLeftMotor", "frontRightMotor", "backRightMotor");
+        arm = new MainArm(hardwareMap, "rightPivot","leftPivot","leftExtension", "rightExtension", "reset", 10, false);
         //deposit = new Arm(hardwareMap);
+
+        arm.setMainState(MainArm.State.intake);
     }
 
     @Override
     public void loop() {
         drive.setFlags(gamepad1.left_bumper, gamepad1.right_bumper);
-        drive.setXYZ(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        drive.setXYZ(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x);
 
-        deposit.process(gamepad2.dpad_up, gamepad2.dpad_down);
+        //deposit.process(gamepad2.dpad_up, gamepad2.dpad_down);
 
         arm.setLmi(gamepad2.right_stick_x);
         if (leftTriggerBoolean() && !rightTriggerBoolean()) {
@@ -37,15 +36,17 @@ public class DeepTeleOp extends OpMode {
         }
 
         increment(gamepad2.b, gamepad2.x);
-
+        telemetry.addData("Arm Statse", arm.getState());
         drive.update();
-        deposit.update(gamepad2.left_bumper, gamepad2.right_bumper);
-        arm.update();
+        //deposit.update(gamepad2.left_bumper, gamepad2.right_bumper);
+        arm.update(gamepad1.x, gamepad1.y);
 
         telemetry.addData("Drive Power %", drive.getMultiplier() * 100);
         telemetry.addData("Arm State", arm.getlState());
         telemetry.addData("Increment", incr);
         telemetry.addData("angle", arm.getAngle());
+        telemetry.addData("angle", arm.getTAngle());
+        telemetry.addData("power", arm.getPower());
         telemetry.update();
     }
 
@@ -63,7 +64,7 @@ public class DeepTeleOp extends OpMode {
         }
 
         if (incr == 1) {
-            arm.setMainState(MainArm.State.inter);
+            arm.setMainState(MainArm.State.idle);
         } else if (incr == 2) {
             arm.setMainState(MainArm.State.basket);
         } else if (incr == 3) {
@@ -80,4 +81,4 @@ public class DeepTeleOp extends OpMode {
     public boolean rightTriggerBoolean() {
         return gamepad2.right_trigger > 0;
     }
-}*/
+}

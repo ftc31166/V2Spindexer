@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Lift {
 
     private DcMotor lLift, rLift;
-    private RevTouchSensor reset;
+    //private RevTouchSensor reset;
 
     private double ticks, power, lastPower;
     private double target = 0;
@@ -38,16 +38,16 @@ public class Lift {
         lLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        reset = hwMap.get(RevTouchSensor.class, touchSensor);
+        //reset = hwMap.get(RevTouchSensor.class, touchSensor);
 
         controller.setTolerance(PIDTol);
 
         this.manual = manual;
     }
 
-    public double readTicks(double ticks)
+    public double readTicks(double ticks, boolean flag)
     {
-        if (reset.isPressed())
+        if (/*reset.isPressed()*/ flag)
         {
             lLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             lLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -72,8 +72,8 @@ public class Lift {
         }
     }
 
-    public void update() {
-        ticks = readTicks(Math.abs(lLift.getCurrentPosition()));
+    public void update(boolean flag) {
+        ticks = readTicks(Math.abs(lLift.getCurrentPosition()), flag);
         if (manual) {
             double dt = 45*mInput;
             target += dt;
@@ -89,8 +89,8 @@ public class Lift {
 
         power = controller.calculate(ticks);
 
-        if (org.firstinspires.ftc.teamcode.rr.Utils.valInThresh(power, lastPower, 0.001)) {
-            if (target == 0 && reset.isPressed()) {
+        if (Utils.valInThresh(power, lastPower, 0.001)) {
+            if (target == 0 && flag) {
                 power = 0;
             }
             apply(power);
@@ -103,8 +103,8 @@ public class Lift {
     }
 
     private void apply(double p) {
-        lLift.setPower(p);
-        rLift.setPower(p);
+        lLift.setPower(p * 0.1);
+        rLift.setPower(p * 0.1);
     }
 
     public boolean check() {

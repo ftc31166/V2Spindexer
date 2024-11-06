@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.rr.Utils;
+import org.firstinspires.ftc.teamcode.subsystems.Utils;
 
 @Config
 public class MPPivot {
@@ -83,9 +83,10 @@ public class MPPivot {
 
         power = controller.calculate(angle) + (k * Math.cos(targetAngle));
 
-        if (flag && Utils.valInThresh(0, lastPower, 0) && targetAngle == 0) {
-            apply(0);
-        } else if (Utils.valInThresh(power, lastPower, 0.01)) {
+        if (Utils.valInThresh(power, lastPower, 0.001)) {
+            if (targetAngle == 0 && flag) {
+                power = 0;
+            }
             apply(power);
             lastPower = power;
         }
