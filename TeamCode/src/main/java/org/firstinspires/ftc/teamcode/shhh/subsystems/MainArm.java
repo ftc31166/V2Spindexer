@@ -49,7 +49,7 @@ public class MainArm {
         this.ltg = ltg;
     }
 
-    public void update() {
+    public void update(boolean reset) {
         if (mainState != lState) {
             switch (mainState) {
                 case basket:
@@ -80,7 +80,7 @@ public class MainArm {
         }
 
         pivot.update();
-        lift.update();
+        lift.update(reset);
     }
 
     public State getlState() {
@@ -93,5 +93,15 @@ public class MainArm {
 
     public boolean stateComplete() {
         return lift.check() && pivot.check();
+    }
+
+    public boolean resetIsPressed()
+    {
+        return pivot.resetIsPressed();
+    }
+
+    public double getPower()
+    {
+        return pivot.power;
     }
 }

@@ -39,7 +39,7 @@ public class DeepTeleOp extends OpMode {
         telemetry.addData("Arm Statse", arm.getState());
         drive.update();
         //deposit.update(gamepad2.left_bumper, gamepad2.right_bumper);
-        arm.update(gamepad1.x, gamepad1.y);
+        arm.update( gamepad1.y);
 
         telemetry.addData("Drive Power %", drive.getMultiplier() * 100);
         telemetry.addData("Arm State", arm.getlState());

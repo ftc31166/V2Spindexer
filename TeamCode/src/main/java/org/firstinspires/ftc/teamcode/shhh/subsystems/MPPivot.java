@@ -18,12 +18,13 @@ public class MPPivot {
 
     private RevTouchSensor reset;
 
+
     PIDController controller = new PIDController(p, i, d);
     TrapezoidProfile profile;
     TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2*Math.PI, 8*Math.PI);
     public static double p = 3, i = 0, d = 0.1, k = 0.2;
 
-    public double tpr = (537.7*(80/30))/(2*Math.PI); // TODO: change this
+    public double tpr = (537.7*(24/60))/(2*Math.PI); // TODO: change this
     public boolean flag = false; // used to check if slide has been reset
 
     public static double vertAngle = 117, backUpAngle = 130, specimen = 70;
@@ -43,8 +44,8 @@ public class MPPivot {
     double angle = 0, langle = angle, aVelocity = 0; // langle is last angle, aVelocity is ang. vel.
 
     public MPPivot(HardwareMap hardwareMap) {
-        rPivot = hardwareMap.dcMotor.get("rPivot");
-        lPivot = hardwareMap.dcMotor.get("lPivot");
+        rPivot = hardwareMap.dcMotor.get("rightPivot");
+        lPivot = hardwareMap.dcMotor.get("leftPivot");
 
         rPivot.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -84,7 +85,7 @@ public class MPPivot {
         power = controller.calculate(angle) + (k * Math.cos(targetAngle));
 
         if (Utils.valInThresh(power, lastPower, 0.001)) {
-            if (targetAngle == 0 && flag) {
+            if (indexedPosition == 0 && flag) {
                 power = 0;
             }
             apply(power);
@@ -105,5 +106,9 @@ public class MPPivot {
 
     public boolean check() {
         return Math.abs(Math.toDegrees(targetAngle)-Math.toDegrees(angle)) < 5;
+    }
+
+    public boolean resetIsPressed() {
+        return reset.isPressed();
     }
 }

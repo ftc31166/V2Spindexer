@@ -10,13 +10,13 @@ import org.firstinspires.ftc.teamcode.shhh.subsystems.MainArm;
 @TeleOp(name = "TeleOP Test")
 public class testTeleOp extends OpMode {
 
-    public Drive drive; public MainArm arm; public Arm deposit;
+    public Drive drive; public MainArm arm; //public Arm deposit;
 
     @Override
     public void init() {
         drive = new Drive(hardwareMap);
         arm = new MainArm(hardwareMap, true);
-        deposit = new Arm(hardwareMap);
+        //deposit = new Arm(hardwareMap);
 
         arm.setMainState(MainArm.State.intake);
     }
@@ -26,9 +26,9 @@ public class testTeleOp extends OpMode {
         drive.setFlags(gamepad1.left_bumper, gamepad1.right_bumper);
         drive.setXYZ(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-        deposit.process(gamepad2.dpad_up, gamepad2.dpad_down);
+        //deposit.process(gamepad2.dpad_up, gamepad2.dpad_down);
 
-        //arm.setLmi(gamepad2.right_stick_x);
+        arm.setLmi(gamepad2.right_stick_x);
         if (leftTriggerBoolean() && !rightTriggerBoolean()) {
             arm.setLtg(0);
         } else if (rightTriggerBoolean() && !leftTriggerBoolean()) {
@@ -38,13 +38,16 @@ public class testTeleOp extends OpMode {
         increment(gamepad2.b, gamepad2.x);
 
         drive.update();
-        deposit.update(gamepad2.left_bumper, gamepad2.right_bumper);
-        arm.update();
+       // deposit.update(gamepad2.left_bumper, gamepad2.right_bumper);
+        arm.update(gamepad1.x);
 
         telemetry.addData("Drive Power %", drive.getMultiplier() * 100);
         telemetry.addData("Arm State", arm.getlState());
         telemetry.addData("Increment", incr);
         telemetry.addData("angle", arm.getAngle());
+        telemetry.addData("reset", arm.resetIsPressed());
+        telemetry.addData("cehck", arm.stateComplete());
+        telemetry.addData("pvot", arm.getPower());
         telemetry.update();
     }
 

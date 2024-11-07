@@ -17,10 +17,10 @@ public class Drive {
     private double mult = 0.8; // speed mult
 
     public Drive(HardwareMap hardwareMap) {
-        fl = hardwareMap.dcMotor.get("frontLeft");
-        bl = hardwareMap.dcMotor.get("backLeft");
-        fr = hardwareMap.dcMotor.get("frontRight");
-        br = hardwareMap.dcMotor.get("backRight");
+        fl = hardwareMap.dcMotor.get("frontLeftMotor");
+        bl = hardwareMap.dcMotor.get("backLeftMotor");
+        fr = hardwareMap.dcMotor.get("frontRightMotor");
+        br = hardwareMap.dcMotor.get("backRightMotor");
 
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

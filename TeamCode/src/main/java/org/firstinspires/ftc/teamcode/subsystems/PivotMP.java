@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.hardware.rev.RevTouchSensor;
@@ -7,25 +8,27 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@Config
 public class PivotMP {
 
     private DcMotor lPivot, rPivot;
+
+    private RevTouchSensor reset;
 
     public static double p = 3, i = 0, d = 0.1, k = 0.2;
     PIDController controller = new PIDController(p, i, d);
 
     TrapezoidProfile profile;
-    TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2*Math.PI, 8*Math.PI);
+    TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(0.1*Math.PI, 2*Math.PI);
 
-    public double tpr = (537.7*(24/60))/(2*Math.PI); // motor tick rate * (input gear/output gear)/2pi
+    public double tpr = (537.7*(60/24))/(2*Math.PI); // motor tick rate * (input gear/output gear)/2pi
 
     public boolean resetFlag = false;
 
     public static double vertAngle = 90, backUpAngle = 110, specimen = 70;
 
-    public double updateCurrentAngle(double current, boolean rFlag) { // if slide reset, return 0, otherwise, return angle in rad
-        if (rFlag) {
+    public double updateCurrentAngle(double current) { // if slide reset, return 0, otherwise, return angle in rad
+        if (reset.isPressed()) {
             rPivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             resetFlag = true;
@@ -50,7 +53,7 @@ public class PivotMP {
         lPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //reset = hardwareMap.get(RevTouchSensor.class, "reset");
+        reset = hardwareMap.get(RevTouchSensor.class, "reset");
 
         profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(0, 0));
     }
@@ -65,9 +68,9 @@ public class PivotMP {
     ElapsedTime fullTimer = new ElapsedTime();
     ElapsedTime velTimer = new ElapsedTime();
 
-    public void update(boolean rFlag) {
+    public void update() {
 
-        angle = Math.abs(updateCurrentAngle(rPivot.getCurrentPosition(), rFlag));
+        angle = Math.abs(updateCurrentAngle(rPivot.getCurrentPosition()));
 
         if (targetAngle != lta) {
             profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(targetAngle, 0), new TrapezoidProfile.State(angle, aVelocity));

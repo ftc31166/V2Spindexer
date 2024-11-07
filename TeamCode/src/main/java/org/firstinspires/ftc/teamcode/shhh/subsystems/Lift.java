@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Utils;
 public class Lift {
 
     private DcMotor lLift, rLift;
-    private RevTouchSensor reset;
+    //private RevTouchSensor reset;
 
     private double target = 0, power, ticks, lastPower;
 
@@ -24,8 +24,8 @@ public class Lift {
     private boolean manual = false;
 
     public Lift(HardwareMap hardwareMap, boolean manual) {
-        rLift = hardwareMap.dcMotor.get("rLift");
-        lLift = hardwareMap.dcMotor.get("lLift");
+        rLift = hardwareMap.dcMotor.get("rightExtension");
+        lLift = hardwareMap.dcMotor.get("leftExtension");
         lLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -36,15 +36,15 @@ public class Lift {
         lLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         rLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        reset = hardwareMap.get(RevTouchSensor.class, "lReset");
+        //reset = hardwareMap.get(RevTouchSensor.class, "lReset");
 
         controller.setTolerance(10);
 
         this.manual = manual;
     }
 
-    public double readTicks(double ticks) {
-        if (reset.isPressed()) {
+    public double readTicks(double ticks, boolean reset) {
+        if (reset) {
             lLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             lLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             return 0;
@@ -75,8 +75,8 @@ public class Lift {
 
 
 
-    public void update() {
-        ticks = readTicks(Math.abs(lLift.getCurrentPosition()));
+    public void update(boolean reset) {
+        ticks = readTicks(Math.abs(lLift.getCurrentPosition()), reset);
         if (manual) {
             double dt = 45*mInput;
             target += dt;
@@ -93,7 +93,7 @@ public class Lift {
         power = controller.calculate(ticks);
 
         if (Utils.valInThresh(power, lastPower, 0.001)) {
-            if (target == 0 && reset.isPressed()) {
+            if (target == 0 && reset) {
                 power = 0;
             }
             apply(power);

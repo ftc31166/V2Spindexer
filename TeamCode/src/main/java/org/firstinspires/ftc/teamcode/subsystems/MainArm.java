@@ -47,7 +47,7 @@ public class MainArm {
         this.ltg = ltg;
     }
 
-    public void update(boolean pivotReset, boolean liftReset)
+    public void update( boolean liftReset)
     {
         if (mainState != lState)
         {
@@ -83,7 +83,7 @@ public class MainArm {
             lift.setTarget(ltg);
         }
 
-        pivot.update(pivotReset);
+        pivot.update();
         lift.update(liftReset);
     }
     public State getlState() {
