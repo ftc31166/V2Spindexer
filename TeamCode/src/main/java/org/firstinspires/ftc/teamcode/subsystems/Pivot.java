@@ -13,9 +13,8 @@ public class Pivot {
     private DcMotor leftPivot, rightPivot;
 
     public static double power = 1;
-    public static int tickChange = 5;
 
-    public static int intake = 0, max = -325, basket = -325;
+    public static int intake = 0, max = 325, basket = 325;
     private int pos;
 
     public Pivot(HardwareMap hwMap, HashMap<String, String> config)
@@ -41,22 +40,9 @@ public class Pivot {
         rightPivot.setPower(power);
     }
 
-    public void changePos(int dir)
+    public void changePos(int tickChange)
     {
-        switch(dir)
-        {
-            case 1:
-                pos = leftPivot.getCurrentPosition() + tickChange;
-                break;
-
-            case -1:
-                pos = leftPivot.getCurrentPosition() - tickChange;
-                break;
-
-            default:
-                pos = leftPivot.getCurrentPosition();
-                break;
-        }
+        pos = leftPivot.getCurrentPosition() + tickChange;
     }
 
     public void setPos(String pos)
