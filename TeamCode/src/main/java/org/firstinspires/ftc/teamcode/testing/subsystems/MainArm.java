@@ -1,9 +1,6 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.testing.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.teamcode.subsystems.PivotMP;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
 public class MainArm {
 

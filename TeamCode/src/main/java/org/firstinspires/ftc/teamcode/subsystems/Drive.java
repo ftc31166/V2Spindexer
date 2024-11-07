@@ -5,69 +5,39 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.util.HashMap;
+
 @Config
 public class Drive {
 
-    private DcMotor fl, fr, bl, br;
-    private double x, y, z, d; // z is rotation, d is for normalization
-    private double gpx, gpy, gpz; // gpx = gamepad x input, gpy = gamepad y input, gpz = gamepad rot input
+    private DcMotor frontLeft, backLeft, frontRight, backRight;
 
-    private boolean isPr = false, downFlag = false, upFlag = false; // isPr makes sure that mult is not changed twice per update() call. upFlag and downFlag are for changing speed mult
+    private double x, y, rx, d;
 
-    private double mult = 0.8; // speed mult
+    public Drive(HardwareMap hwMap, HashMap<String, String> config)
+    {
+        frontLeft = hwMap.dcMotor.get(config.get("frontLeft"));
+        backLeft = hwMap.dcMotor.get(config.get("backLeft"));
+        frontRight = hwMap.dcMotor.get(config.get("frontRight"));
+        backRight = hwMap.dcMotor.get(config.get("backRight"));
 
-    public Drive(HardwareMap hardwareMap, String frontLeft, String backLeft, String frontRight, String backRight) {
-        fl = hardwareMap.dcMotor.get(frontLeft);
-        bl = hardwareMap.dcMotor.get(backLeft);
-        fr = hardwareMap.dcMotor.get(frontRight);
-        br = hardwareMap.dcMotor.get(backRight);
-
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fr .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        fr.setDirection(DcMotorSimple.Direction.REVERSE);
-        br.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void setFlags(boolean down, boolean up) {
-        upFlag = up; downFlag = down;
+    public void getXYZ(double x, double y, double rx)
+    {
+        this.x =x;
+        this.y = y;
+        this.rx = rx;
     }
 
-    public void setXYZ(double x, double y, double z) {
-        gpx = -x; gpy = -y; gpz = -z;
+    public void update()
+    {
+        d = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        frontLeft.setPower((y + x + rx) / d);
+        backLeft.setPower((y - x + rx) / d);
+        frontRight.setPower((y + x - rx) / d);
+        backRight.setPower((y - x - rx) / d);
     }
-
-    public void update() {
-        if (downFlag && !isPr && mult > 0.1) {
-            mult -= 0.1;
-            isPr = true;
-        } else if (upFlag && !isPr && mult < 1) {
-            mult += 0.1;
-            isPr = true;
-        } else if (!downFlag && !upFlag) {
-            isPr = false;
-        }
-
-        x = -gpx; y = gpy; z = gpz;
-        d = Math.max(abs(x) + abs(y) + abs(z), 1);
-        smp(x * mult, y * mult, z * mult);
-    }
-
-    public double getMultiplier() {
-        return mult;
-    }
-
-    private double abs(double i) {
-        return Math.abs(i);
-    }
-
-    public void smp(double x, double y, double z) { // calculate power per motor
-        fl.setPower((y + x - z)/d);
-        bl.setPower((y - x - z)/d);
-        fr.setPower((y + x + z)/d);
-        br.setPower((y - x + z)/d);
-    }
-
 }

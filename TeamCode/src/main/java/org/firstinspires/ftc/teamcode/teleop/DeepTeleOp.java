@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //import org.firstinspires.ftc.teamcode.shhh.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.subsystems.MainArm;
+import org.firstinspires.ftc.teamcode.testing.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.testing.subsystems.MainArm;
 
 @TeleOp(name = "DeepTeleOp")
 public class DeepTeleOp extends OpMode {
