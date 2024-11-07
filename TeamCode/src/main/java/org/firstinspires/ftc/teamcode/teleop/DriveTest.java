@@ -39,7 +39,7 @@ public class DriveTest extends LinearOpMode {
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         leftPivotMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        //comment
         leftPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftPivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
