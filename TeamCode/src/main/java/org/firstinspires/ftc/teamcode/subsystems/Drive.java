@@ -14,7 +14,9 @@ public class Drive {
 
     private double x, y, rx, d;
 
-    public static double speedMult = 1, rotMult = 0.5;
+    public static double speedMult = 1, rotMult = 0.5, slowMult = 0.5;
+
+    private boolean slowMode = false;
 
     public Drive(HardwareMap hwMap, HashMap<String, String> config)
     {
@@ -41,5 +43,21 @@ public class Drive {
         backLeft.setPower((y - x + rx) / d);
         frontRight.setPower((y + x - rx) / d);
         backRight.setPower((y - x - rx) / d);
+    }
+
+    public void toggleSlowMode()
+    {
+        if (slowMode)
+        {
+            slowMode = false;
+            speedMult /= slowMult;
+            rotMult /= slowMult;
+        }
+        else if (!slowMode)
+        {
+            slowMode = true;
+            speedMult *= slowMult;
+            rotMult *= slowMult;
+        }
     }
 }

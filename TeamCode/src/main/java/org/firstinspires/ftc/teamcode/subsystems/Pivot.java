@@ -4,10 +4,12 @@ import android.text.InputFilter;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.HashMap;
 
@@ -16,18 +18,28 @@ public class Pivot {
 
     private DcMotorEx leftPivot, rightPivot;
 
-    public static double power = 0.1;
+    public static double power = 0, lastPower = power;
 
     public static int intake = 35, max = 325, highBasket = 325, lowSpec = 120, highSpec = 200, idle = 300;
     private int pos;
 
-    public static double kP = 0.1, kI = 0, kD = 0;
+    public static double kP = 0.1, kI = 0, kD = 0, k = 0.2;
 
     PIDController pidController = new PIDController(kP, kI, kD);
 
-    private int curLeft, curRight;
+    private int curLeft = 0, langle = curLeft;
 
     public static int threshold = 10;
+
+    TrapezoidProfile profile;
+    TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Util.MAX_PIVOT_VELOCITY, Util.MAX_PIVOT_ACCEL);
+
+    private int lta = 0;
+
+    ElapsedTime fullTimer = new ElapsedTime();
+    ElapsedTime velTimer = new ElapsedTime();
+
+    double aVelocity, indexedPosition = 0;
 
     public Pivot(HardwareMap hwMap, HashMap<String, String> config)
     {
@@ -43,24 +55,44 @@ public class Pivot {
         rightPivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(0, 0));
     }
 
     public void update()
     {
         curLeft = leftPivot.getCurrentPosition();
-        curRight = rightPivot.getCurrentPosition();
+       //curRight = rightPivot.getCurrentPosition();
 
-        leftPivot.setPower(pidController.calculate(curLeft, pos));
-        rightPivot.setPower(pidController.calculate(curRight, pos));
+        if (pos != lta) {
+            profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(pos, 0), new TrapezoidProfile.State(curLeft, aVelocity));
+            fullTimer.reset();
+        }
 
-        if (check(curLeft, pos, threshold))
-        {
-            leftPivot.setPower(0);
+        indexedPosition = profile.calculate(fullTimer.seconds()).position;
+
+        pidController.setSetPoint(indexedPosition);
+
+        power = pidController.calculate(curLeft) + (k * Math.cos(pos));
+
+        if (/*flag &&*/ Util.inThresh(0, lastPower, 0) && pos == 0) {
+            applyPower(0);
+        } else if (Util.inThresh(power, lastPower, 0.01)) {
+            applyPower(power);
+            lastPower = power;
         }
-        if (check(curRight, pos, threshold))
-        {
-            rightPivot.setPower(0);
-        }
+
+        lta = pos;
+
+        aVelocity = (curLeft-langle)/velTimer.seconds();
+        langle = curLeft;
+        velTimer.reset();
+    }
+
+    public void applyPower(double power)
+    {
+        leftPivot.setPower(power);
+        rightPivot.setPower(power);
     }
 
     public void changePos(int tickChange)
