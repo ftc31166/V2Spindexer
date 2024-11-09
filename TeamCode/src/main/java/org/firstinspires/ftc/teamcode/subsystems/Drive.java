@@ -14,7 +14,7 @@ public class Drive {
 
     private double x, y, rx, d;
 
-    public static double speedMult = 1, rotMult = 0.5, slowMult = 0.5;
+    public static double speedMult = 1, rotMult = 0.5, slowMult = 0.5, curveFactor = 1;
 
     private boolean slowMode = false;
 
@@ -31,9 +31,9 @@ public class Drive {
 
     public void getXYZ(double x, double y, double rx)
     {
-        this.x =x * speedMult;
-        this.y = y * speedMult;
-        this.rx = rx * rotMult;
+        this.x =Math.signum(x) * Math.pow(Math.abs(x * speedMult), curveFactor);
+        this.y = Math.signum(y) * Math.pow(Math.abs(y * speedMult), curveFactor);
+        this.rx = Math.signum(rx) * Math.pow(Math.abs(rx * speedMult), curveFactor);
     }
 
     public void update()
