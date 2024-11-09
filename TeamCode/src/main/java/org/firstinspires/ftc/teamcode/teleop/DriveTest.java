@@ -14,8 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class DriveTest extends LinearOpMode {
     public static double test1 = 0.6, test2 = 1;
-    public static int test3 = 100;
-
+    public static int  test3 = 100;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -55,7 +54,7 @@ public class DriveTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x;
+            double x = gamepad1.left_stick_x; // Counteract imperfect strafing
             double rx = -gamepad1.right_stick_x;
 
             // Denominator is the largest motor power (absolute value) or 1
@@ -72,10 +71,9 @@ public class DriveTest extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
-            // raise arm
             if (gamepad1.a) {
-                leftPivotMotor.setTargetPosition(leftPivotMotor.getCurrentPosition() + 5);
-                rightPivotMotor.setTargetPosition(rightPivotMotor.getCurrentPosition() + 5);
+                leftPivotMotor.setTargetPosition(leftPivotMotor.getCurrentPosition()+5);
+                rightPivotMotor.setTargetPosition(rightPivotMotor.getCurrentPosition()+5);
                 leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 leftPivotMotor.setPower(1);
@@ -84,66 +82,49 @@ public class DriveTest extends LinearOpMode {
 
             // If the B button is pressed, lower the arm
             if (gamepad1.b) {
-                leftPivotMotor.setTargetPosition(leftPivotMotor.getCurrentPosition() - 5);
-                rightPivotMotor.setTargetPosition(rightPivotMotor.getCurrentPosition() - 5);
+                leftPivotMotor.setTargetPosition(leftPivotMotor.getCurrentPosition()-5);
+                rightPivotMotor.setTargetPosition(rightPivotMotor.getCurrentPosition()-5);
                 leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 leftPivotMotor.setPower(1);
                 rightPivotMotor.setPower(1);
             }
 
-            if (gamepad2.right_trigger > 0) {
-                leftExtension.setTargetPosition(leftExtension.getCurrentPosition() + 5);
-                rightExtension.setTargetPosition(rightExtension.getCurrentPosition() - 5);
-                leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                leftExtension.setPower(1);
-                rightExtension.setPower(1);
-            }
-
-            if (gamepad2.left_trigger > 0) {
-                leftExtension.setTargetPosition(leftExtension.getCurrentPosition() - 5);
-                rightExtension.setTargetPosition(rightExtension.getCurrentPosition() + 5);
-                leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                leftExtension.setPower(1);
-                rightExtension.setPower(1);
-            }
-
-
-            // intake
-            if (gamepad2.a) {
+            if (gamepad2.a)
+            {
                 leftPivotMotor.setTargetPosition(0);
                 rightPivotMotor.setTargetPosition(0);
                 leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 leftPivotMotor.setPower(1);
                 rightPivotMotor.setPower(1);
-                pivot.setPosition(0.5);
+                // pivot.setPosition(0.1);
             }
-            // basket
-            if (gamepad2.b) {
+            if (gamepad2.b)
+            {
                 leftPivotMotor.setTargetPosition(-325);
                 rightPivotMotor.setTargetPosition(-325);
                 leftPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 rightPivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 leftPivotMotor.setPower(1);
                 rightPivotMotor.setPower(1);
-                pivot.setPosition(1);
+                //pivot.setPosition(0.5);
             }
 
-
-            if (gamepad1.y) {
+            if (gamepad1.y)
+            {
                 pivot.setPosition(0);
 
 
             }
-            if (gamepad1.x) {
+            if (gamepad1.x)
+            {
                 pivot.setPosition(1);
 
             }
 
-            if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_up)
+            {
                 leftExtension.setTargetPosition(3425);
                 rightExtension.setTargetPosition(-3425);
                 leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -151,7 +132,8 @@ public class DriveTest extends LinearOpMode {
                 leftExtension.setPower(1);
                 rightExtension.setPower(1);
             }
-            if (gamepad2.dpad_down) {
+            if (gamepad2.dpad_down)
+            {
                 leftExtension.setTargetPosition(0);
                 rightExtension.setTargetPosition(0);
                 leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);

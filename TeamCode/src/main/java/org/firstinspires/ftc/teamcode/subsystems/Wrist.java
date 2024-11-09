@@ -10,7 +10,7 @@ public class Wrist {
 
     Servo wrist;
 
-    public static double intake = 0, basket = 1, idle = 0.2;
+    public static double intake = 0, basket = 1, idle = 0.2, lowSpec = 0.5, highSpec = 0.4, realIntake = 0.4;
     private double pos;
 
     public Wrist(HardwareMap hwMap, HashMap<String, String> config)
@@ -27,12 +27,32 @@ public class Wrist {
     {
         switch (pos)
         {
-            case "Intake":
+            case "Specimen Intake":
                 this.pos = intake;
                 break;
 
-            case "Basket":
+            case "Sample Intake":
+                this.pos = intake;
+                break;
+
+            case "Low Basket":
                 this.pos = basket;
+                break;
+
+            case "High Basket":
+                this.pos = basket;
+                break;
+
+            case "Low Specimen":
+                this.pos = lowSpec;
+                break;
+
+            case "High Specimen":
+                this.pos = highSpec;
+                break;
+
+            case "Intake":
+                this.pos = realIntake;
                 break;
 
             default:

@@ -14,6 +14,8 @@ public class Drive {
 
     private double x, y, rx, d;
 
+    public static double speedMult = 1, rotMult = 0.5;
+
     public Drive(HardwareMap hwMap, HashMap<String, String> config)
     {
         frontLeft = hwMap.dcMotor.get(config.get("frontLeft"));
@@ -27,9 +29,9 @@ public class Drive {
 
     public void getXYZ(double x, double y, double rx)
     {
-        this.x =x;
-        this.y = y;
-        this.rx = rx;
+        this.x =x * speedMult;
+        this.y = y * speedMult;
+        this.rx = rx * rotMult;
     }
 
     public void update()

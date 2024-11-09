@@ -14,7 +14,7 @@ public class Extension {
 
     public static double power = 1;
 
-    public static int intake = 1000, max = 3425, highBasket = 3425;
+    public static int specIntake = 1000, sampleIntake = 0, max = 3425, highBasket = 3425, lowBasket = 100, lowSpec = 0, highSpec = 1500, idle = 0;
     private int pos;
 
     public Extension(HardwareMap hwMap, HashMap<String, String> config)
@@ -44,12 +44,32 @@ public class Extension {
     {
         switch (pos)
         {
-            case "Intake":
-                this.pos = intake;
+            case "Specimen Intake":
+                this.pos = specIntake;
+                break;
+
+            case "Sample Intake":
+                this.pos = sampleIntake;
+                break;
+
+            case "Low Basket":
+                this.pos = lowBasket;
                 break;
 
             case "High Basket":
                 this.pos = highBasket;
+                break;
+
+            case "Low Specimen":
+                this.pos = lowSpec;
+                break;
+
+            case "High Specimen":
+                this.pos = highSpec;
+                break;
+
+            default:
+                this.pos = idle;
                 break;
         }
     }
