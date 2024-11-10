@@ -149,6 +149,7 @@ public class DriveTestSS extends LinearOpMode {
             telemetry.addData("target", target);
             telemetry.addData("wrist", wristManual);
             telemetry.addData("e", extensionManual);
+            telemetry.addData("error", pivot.getError());
             //telemetry.addData("r", rightExtension.getCurrentPosition());
             //telemetry.addData("pivot", cpivot.getPosition());
 

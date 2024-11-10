@@ -23,7 +23,7 @@ public class Pivot {
     public static int intake = 35, max = 325, highBasket = 325, lowSpec = 120, highSpec = 200, idle = 300;
     private int pos;
 
-    public static double kP = 0.1, kI = 0, kD = 0, k = 0.2;
+    public static double kP = 0.005, kI = 0, kD = 0, k = 0;
 
     PIDController pidController = new PIDController(kP, kI, kD);
 
@@ -62,7 +62,7 @@ public class Pivot {
     public void update()
     {
         curLeft = leftPivot.getCurrentPosition();
-       //curRight = rightPivot.getCurrentPosition();
+        //curRight = rightPivot.getCurrentPosition();
 
         if (pos != lta) {
             profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(pos, 0), new TrapezoidProfile.State(curLeft, aVelocity));
@@ -133,9 +133,13 @@ public class Pivot {
                 break;
         }
     }
-
     public boolean check(int cur, int target, int thresh)
     {
         return Math.abs(target - cur) < thresh;
+    }
+
+    public int getError()
+    {
+        return pos - curLeft;
     }
 }

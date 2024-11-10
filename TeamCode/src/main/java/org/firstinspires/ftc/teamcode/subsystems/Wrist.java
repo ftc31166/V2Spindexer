@@ -16,6 +16,8 @@ public class Wrist {
     public Wrist(HardwareMap hwMap, HashMap<String, String> config)
     {
         wrist = hwMap.servo.get(config.get("wrist"));
+
+        wrist.setDirection(Servo.Direction.REVERSE);
     }
 
     public void update()
