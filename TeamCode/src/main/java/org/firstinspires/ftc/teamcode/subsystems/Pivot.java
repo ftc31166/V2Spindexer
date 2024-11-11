@@ -23,7 +23,7 @@ public class Pivot {
     public static int intake = 35, max = 325, highBasket = 325, lowSpec = 120, highSpec = 200, idle = 300;
     private int pos;
 
-    public static double kP = 0.005, kI = 0, kD = 0, k = 0;
+    public static double kP = 0.01, kI = 0, kD = 0, k = 0;
 
     PIDController pidController = new PIDController(kP, kI, kD);
 
