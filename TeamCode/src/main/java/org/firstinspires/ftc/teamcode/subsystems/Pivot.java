@@ -20,10 +20,12 @@ public class Pivot {
 
     public static double power = 0, lastPower = power;
 
-    public static int intake = 35, max = 325, highBasket = 325, lowSpec = 120, highSpec = 200, idle = 300;
+    public static int intake = 40, max = 325, highBasket = 300, lowSpec = 120, highSpec = 200, idle = 300;
     private int pos;
 
     public static double kP = 0.01, kI = 0, kD = 0, k = 0;
+
+    public static double extendedKp = 0.05;
 
     PIDController pidController = new PIDController(kP, kI, kD);
 
@@ -106,30 +108,37 @@ public class Pivot {
         {
             case "Specimen Intake":
                 this.pos = intake;
+                pidController.setP(kP);
                 break;
 
             case "Sample Intake":
                 this.pos = intake;
+                pidController.setP(kP);
                 break;
 
             case "Low Basket":
                 this.pos = highBasket;
+                pidController.setP(extendedKp);
                 break;
 
             case "High Basket":
                 this.pos = highBasket;
+                pidController.setP(extendedKp);
                 break;
 
             case "Low Specimen":
                 this.pos = lowSpec;
+                pidController.setP(kP);
                 break;
 
             case "High Specimen":
                 this.pos = highSpec;
+                pidController.setP(extendedKp);
                 break;
 
             default:
                 this.pos = idle;
+                pidController.setP(kP);
                 break;
         }
     }
@@ -141,5 +150,13 @@ public class Pivot {
     public int getError()
     {
         return pos - curLeft;
+    }
+
+    public boolean isBusy() {
+        return leftPivot.isBusy();
+    }
+
+    public int getTicks() {
+        return leftPivot.getCurrentPosition();
     }
 }

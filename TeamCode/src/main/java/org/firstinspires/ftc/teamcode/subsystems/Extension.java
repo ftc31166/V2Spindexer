@@ -12,9 +12,9 @@ public class Extension {
 
     private DcMotor leftExtension, rightExtension;
 
-    public static double power = 1;
+    public static double power = 0.4;
 
-    public static int specIntake = 1000, sampleIntake = 0, max = 3425, highBasket = 3425, lowBasket = 100, lowSpec = 0, highSpec = 1500, idle = 0;
+    public static int specIntake = 1000, sampleIntake = 10, max = 2450, highBasket = 2450, lowBasket = 100, lowSpec = 10, highSpec = 1000, idle = 10;
     private int pos;
 
     public Extension(HardwareMap hwMap, HashMap<String, String> config)
@@ -72,6 +72,12 @@ public class Extension {
                 this.pos = idle;
                 break;
         }
+
+
+    }
+
+    public boolean isBusy(){
+        return leftExtension.isBusy();
     }
 
 }

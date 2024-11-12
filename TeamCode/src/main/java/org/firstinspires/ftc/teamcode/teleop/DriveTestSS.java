@@ -90,7 +90,7 @@ public class DriveTestSS extends LinearOpMode {
                 extension.setPos("Low Specimen");
                 extensionReady  = false;
             }
-            else if (gamepad2.y && extensionReady) {
+            else if ((gamepad2.y || gamepad1.dpad_up) && extensionReady) {
                 extensionManual = true;
                 extension.setPos("High Specimen");
                 extensionReady  = false;
@@ -124,8 +124,12 @@ public class DriveTestSS extends LinearOpMode {
             }
 
             target = increment(gamepad1.right_bumper, gamepad1.left_bumper, sequence);
-            pivot.setPos(target);
-            if (!extensionManual)
+            if (!extension.isBusy())
+            {
+                pivot.setPos(target);
+            }
+
+            if (!extensionManual && !pivot.isBusy())
             {
                 extension.setPos(target);
             }
@@ -150,7 +154,7 @@ public class DriveTestSS extends LinearOpMode {
             telemetry.addData("wrist", wristManual);
             telemetry.addData("e", extensionManual);
             telemetry.addData("error", pivot.getError());
-            //telemetry.addData("r", rightExtension.getCurrentPosition());
+            telemetry.addData("r", pivot.getTicks());
             //telemetry.addData("pivot", cpivot.getPosition());
 
             telemetry.update();
