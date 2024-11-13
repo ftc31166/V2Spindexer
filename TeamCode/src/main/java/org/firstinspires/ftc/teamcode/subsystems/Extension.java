@@ -5,6 +5,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.arcrobotics.ftclib.controllers.PIDController;
 
 import java.util.HashMap;
 
@@ -20,6 +21,12 @@ public class Extension {
     public static int specIntake = 1000, sampleIntake = 20, max = 2350, highBasket = 2350, lowBasket = 100, lowSpec = 20, highSpec = 1000, idle = 20;
     private int pos;
 
+    public static double kP = 0.01, kI = 0, kD = 0;
+
+    private int curLeft;
+
+    PIDController pidController = new PIDController(kP, kI, kD);
+
     RevTouchSensor reset;
     public Extension(HardwareMap hwMap, HashMap<String, String> config)
     {
@@ -32,18 +39,24 @@ public class Extension {
 
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftExtension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        
+        pidController.setTolerance(10);
+
     }
 
     public void update()
     {
-        leftExtension.setTargetPosition(pos);
-        rightExtension.setTargetPosition(pos);
-        leftExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightExtension.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftExtension.setPower(power);
-        rightExtension.setPower(power);
+        curLeft = leftExtension.getCurrentPosition();
+
+        if (check(curLeft, pos, 10))
+        {
+            applyPower(0);
+        }
+        else{
+            applyPower(pidController.calculate(curLeft, pos));
+        }
     }
 
     public void setPos(String pos)
@@ -83,6 +96,12 @@ public class Extension {
 
     }
 
+    public void applyPower(double power)
+    {
+        leftExtension.setPower(power);
+        rightExtension.setPower(power);
+    }
+
     public boolean isBusy(){
         return leftExtension.isBusy();
     }
@@ -98,9 +117,14 @@ public class Extension {
         {
             leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftExtension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightExtension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+    }
+
+    public boolean check(int cur, int target, int thresh)
+    {
+        return Math.abs(cur - target) < thresh;
     }
 
 }
