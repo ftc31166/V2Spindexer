@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.shhh.subsystems.MainArm;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
@@ -43,7 +44,7 @@ public class DriveTestSS extends LinearOpMode {
         deviceConf.put("wrist",           "pivot");
         deviceConf.put("reset",           "reset");
 
-        Servo claw = hardwareMap.servo.get("claw");
+        Claw claw = new Claw(hardwareMap);
         Drive drive = new Drive(hardwareMap, deviceConf);
 
         Pivot pivot = new Pivot(hardwareMap, deviceConf);
@@ -75,12 +76,12 @@ public class DriveTestSS extends LinearOpMode {
                 incr = 0;
                 swapReady = false;
             }
-            if (gamepad1.y && wristReady) {
+            if (gamepad1.x && wristReady ) {
                 wristManual = true;
                 wrist.setPos("Intake");
                 wristReady = false;
             }
-            else if (gamepad1.x && wristReady) {
+            else if (gamepad1.y && wristReady) {
                 wristManual = true;
                 wrist.setPos("High Basket");
                 wristReady = false;
@@ -106,16 +107,10 @@ public class DriveTestSS extends LinearOpMode {
                 extension.setPos("High Basket");
                 extensionReady  = false;
             }
-
-            if (gamepad1.a && clawReady)
-            {
-                claw.setPosition(clawClose);
-                clawReady = false;
-            }
-            if (gamepad1.b && clawReady)
-            {
-                claw.setPosition(clawOpen);
-                clawReady = false;
+            else if (gamepad1.dpad_down && extensionReady) {
+                extensionManual = true;
+                extension.setPos("Idle");
+                extensionReady  = false;
             }
 
             if (gamepad2.right_bumper || gamepad2.left_bumper || gamepad1.right_bumper || gamepad1.left_bumper)
@@ -125,7 +120,7 @@ public class DriveTestSS extends LinearOpMode {
             }
 
             target = increment(gamepad1.right_bumper, gamepad1.left_bumper, sequence);
-            if (!extension.isBusy())
+            /*if (!extension.isBusy())
             {
                 pivot.setPos(target);
             }
@@ -133,7 +128,7 @@ public class DriveTestSS extends LinearOpMode {
             if (!extensionManual && !pivot.isBusy())
             {
                 extension.setPos(target);
-            }
+            }*/
             if (!wristManual)
             {
                 wrist.setPos(target);
@@ -151,6 +146,7 @@ public class DriveTestSS extends LinearOpMode {
             pivot.update();
             extension.update();
             wrist.update();
+            claw.update(gamepad1.a);
 
             telemetry.addData("incr", incr);
             telemetry.addData("lastincr", lastIncr);

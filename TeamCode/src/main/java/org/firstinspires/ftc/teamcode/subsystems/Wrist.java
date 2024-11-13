@@ -13,6 +13,8 @@ public class Wrist {
     public static double intake = 0.5, basket = 0.4, idle = 0.3, lowSpec = 0.5, highSpec = 0.4, realIntake = 1;
     private double pos;
 
+    public String posStr = "";
+
     public Wrist(HardwareMap hwMap, HashMap<String, String> config)
     {
         wrist = hwMap.servo.get(config.get("wrist"));
@@ -61,5 +63,11 @@ public class Wrist {
                 this.pos = idle;
                 break;
         }
+        posStr = pos;
+    }
+
+    public String getTarget()
+    {
+        return posStr;
     }
 }

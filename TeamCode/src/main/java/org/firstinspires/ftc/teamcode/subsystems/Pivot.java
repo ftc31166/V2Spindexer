@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystems.Util;
+
 import java.util.HashMap;
 
 @Config
@@ -21,7 +23,7 @@ public class Pivot {
 
     public static double power = 0, lastPower = power;
 
-    public static int intake = 40, max = 325, highBasket = 300, lowSpec = 120, highSpec = 200, idle = 300;
+    public static int intake = 30, max = 325, highBasket = 300, lowSpec = 120, highSpec = 200, idle = 300;
     private int pos;
 
     public static double kP = 0.01, kI = 0, kD = 0, k = 0;
@@ -79,9 +81,7 @@ public class Pivot {
 
         power = pidController.calculate(curLeft) + (k * Math.cos(pos));
 
-        if (/*flag &&*/ Util.inThresh(0, lastPower, 0) && pos == 0) {
-            applyPower(0);
-        } else if (Util.inThresh(power, lastPower, 0.01)) {
+        if (Util.inThresh(power, lastPower, 0.001)) {
             applyPower(power);
             lastPower = power;
         }

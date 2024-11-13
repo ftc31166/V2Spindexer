@@ -13,11 +13,11 @@ public class Extension {
 
     private DcMotor leftExtension, rightExtension;
 
-    public static double power = 0.4;
+    public static double power = 0.5;
 
     public String posStr = "";
 
-    public static int specIntake = 1000, sampleIntake = 10, max = 2425, highBasket = 2425, lowBasket = 100, lowSpec = 10, highSpec = 1000, idle = 10;
+    public static int specIntake = 1000, sampleIntake = 20, max = 2350, highBasket = 2350, lowBasket = 100, lowSpec = 20, highSpec = 1000, idle = 20;
     private int pos;
 
     RevTouchSensor reset;
@@ -55,7 +55,7 @@ public class Extension {
                 break;
 
             case "Sample Intake":
-                this.pos = sampleIntake;
+                this.pos = idle;
                 break;
 
             case "Low Basket":
