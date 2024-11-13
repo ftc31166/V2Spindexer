@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,13 +15,18 @@ public class Extension {
 
     public static double power = 0.4;
 
-    public static int specIntake = 1000, sampleIntake = 10, max = 2450, highBasket = 2450, lowBasket = 100, lowSpec = 10, highSpec = 1000, idle = 10;
+    public String posStr = "";
+
+    public static int specIntake = 1000, sampleIntake = 10, max = 2425, highBasket = 2425, lowBasket = 100, lowSpec = 10, highSpec = 1000, idle = 10;
     private int pos;
 
+    RevTouchSensor reset;
     public Extension(HardwareMap hwMap, HashMap<String, String> config)
     {
         leftExtension = hwMap.dcMotor.get(config.get("leftExtension"));
         rightExtension = hwMap.dcMotor.get(config.get("rightExtension"));
+
+        reset = hwMap.get(RevTouchSensor.class, config.get("reset"));
 
         rightExtension.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -73,11 +79,28 @@ public class Extension {
                 break;
         }
 
+        posStr = pos;
 
     }
 
     public boolean isBusy(){
         return leftExtension.isBusy();
+    }
+
+    public String getTarget()
+    {
+        return posStr;
+    }
+
+    public void checkReset()
+    {
+        if(reset.isPressed())
+        {
+            leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 
 }

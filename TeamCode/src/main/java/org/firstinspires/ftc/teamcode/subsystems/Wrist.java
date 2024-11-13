@@ -10,7 +10,7 @@ public class Wrist {
 
     Servo wrist;
 
-    public static double intake = 0.5, basket = 0.3, idle = 0.1, lowSpec = 0.5, highSpec = 0.4, realIntake = 0.65;
+    public static double intake = 0.5, basket = 0.4, idle = 0.3, lowSpec = 0.5, highSpec = 0.4, realIntake = 1;
     private double pos;
 
     public Wrist(HardwareMap hwMap, HashMap<String, String> config)

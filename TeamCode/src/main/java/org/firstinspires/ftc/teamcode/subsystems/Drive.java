@@ -14,7 +14,7 @@ public class Drive {
 
     private double x, y, rx, d;
 
-    public static double speedMult = 1.5, rotMult = 0.5, slowMult = 0.5, curveFactor = 1, strafeCorrection = 1.1;
+    public static double speedMult = 0.8, rotMult = 0.5, slowMult = 0.5, curveFactor = 1.5, strafeCorrection = 1.1;
 
     private boolean slowMode = false;
 

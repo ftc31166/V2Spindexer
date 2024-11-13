@@ -41,6 +41,7 @@ public class DriveTestSS extends LinearOpMode {
         deviceConf.put("leftExtension",   "leftExtension");
         deviceConf.put("rightExtension",  "rightExtension");
         deviceConf.put("wrist",           "pivot");
+        deviceConf.put("reset",           "reset");
 
         Servo claw = hardwareMap.servo.get("claw");
         Drive drive = new Drive(hardwareMap, deviceConf);
@@ -143,6 +144,9 @@ public class DriveTestSS extends LinearOpMode {
                 drive.toggleSlowMode();
             }
 
+            pivot.setKP(extension.getTarget());
+            extension.checkReset();
+
             drive.update();
             pivot.update();
             extension.update();
@@ -155,7 +159,7 @@ public class DriveTestSS extends LinearOpMode {
             telemetry.addData("e", extensionManual);
             telemetry.addData("error", pivot.getError());
             telemetry.addData("r", pivot.getTicks());
-            //telemetry.addData("pivot", cpivot.getPosition());
+            telemetry.addData("kp", pivot.getKP());
 
             telemetry.update();
 

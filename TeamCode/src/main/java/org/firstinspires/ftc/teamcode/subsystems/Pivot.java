@@ -5,6 +5,7 @@ import android.text.InputFilter;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -42,6 +43,7 @@ public class Pivot {
     ElapsedTime velTimer = new ElapsedTime();
 
     double aVelocity, indexedPosition = 0;
+
 
     public Pivot(HardwareMap hwMap, HashMap<String, String> config)
     {
@@ -108,36 +110,63 @@ public class Pivot {
         {
             case "Specimen Intake":
                 this.pos = intake;
-                pidController.setP(kP);
                 break;
 
             case "Sample Intake":
                 this.pos = intake;
-                pidController.setP(kP);
                 break;
 
             case "Low Basket":
                 this.pos = highBasket;
-                pidController.setP(extendedKp);
                 break;
 
             case "High Basket":
                 this.pos = highBasket;
-                pidController.setP(extendedKp);
                 break;
 
             case "Low Specimen":
                 this.pos = lowSpec;
-                pidController.setP(kP);
                 break;
 
             case "High Specimen":
                 this.pos = highSpec;
-                pidController.setP(extendedKp);
                 break;
 
             default:
                 this.pos = idle;
+                break;
+        }
+    }
+
+    public void setKP(String pos)
+    {
+        switch(pos)
+        {
+            case "Specimen Intake":
+                pidController.setP(kP);
+                break;
+
+            case "Sample Intake":
+                pidController.setP(kP);
+                break;
+
+            case "Low Basket":
+                pidController.setP(extendedKp);
+                break;
+
+            case "High Basket":
+                pidController.setP(extendedKp);
+                break;
+
+            case "Low Specimen":
+                pidController.setP(kP);
+                break;
+
+            case "High Specimen":
+                pidController.setP(extendedKp);
+                break;
+
+            default:
                 pidController.setP(kP);
                 break;
         }
@@ -159,4 +188,11 @@ public class Pivot {
     public int getTicks() {
         return leftPivot.getCurrentPosition();
     }
+
+    public double getKP()
+    {
+        return pidController.getP();
+    }
+
+
 }
