@@ -50,6 +50,24 @@ public class Drive {
         backRight.setPower((y + x - rx) / d);
     }
 
+    public void accelerateForward(double u, double v, double millis)
+    {
+        for (int i = 0; i < millis; i ++)
+        {
+            apply(u + ((v-u)/t));
+            wait(1);
+        }
+    }
+
+    public void applyPower(double p)
+    {
+        frontLeft.setPower(p);
+        frontRight.setPower(p);
+        backLeft.setPower(p);
+        backRight.setPower(p);
+    }
+
+
     public void toggleSlowMode()
     {
         if (slowMode)

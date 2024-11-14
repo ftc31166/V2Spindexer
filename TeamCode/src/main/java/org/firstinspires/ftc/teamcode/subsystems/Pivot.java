@@ -23,12 +23,12 @@ public class Pivot {
 
     public static double power = 0, lastPower = power;
 
-    public static int intake = 30, max = 325, highBasket = 300, lowSpec = 120, highSpec = 200, idle = 300;
+    public static int intake = 30, max = 325, highBasket = 300, lowSpec = 120, highSpec = 200, idle = 300, zero = 0;
     private int pos;
 
     public static double kP = 0.01, kI = 0, kD = 0, k = 0;
 
-    public static double extendedKp = 0.05;
+    public static double extendedKp = 0.05, zeroKp = 0.005;
 
     PIDController pidController = new PIDController(kP, kI, kD);
 
@@ -46,6 +46,7 @@ public class Pivot {
 
     double aVelocity, indexedPosition = 0;
 
+    RevTouchSensor reset;
 
     public Pivot(HardwareMap hwMap, HashMap<String, String> config)
     {
@@ -62,14 +63,17 @@ public class Pivot {
         leftPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        reset = hwMap.get(RevTouchSensor.class, config.get("pivotReset"));
+
         profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(0, 0));
     }
 
     public void update()
     {
+        
         curLeft = leftPivot.getCurrentPosition();
         //curRight = rightPivot.getCurrentPosition();
-
+        checkReset();
         if (pos != lta) {
             profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(pos, 0), new TrapezoidProfile.State(curLeft, aVelocity));
             fullTimer.reset();
@@ -80,11 +84,12 @@ public class Pivot {
         pidController.setSetPoint(indexedPosition);
 
         power = pidController.calculate(curLeft) + (k * Math.cos(pos));
-
+        
         if (Util.inThresh(power, lastPower, 0.001)) {
             applyPower(power);
             lastPower = power;
         }
+        
 
         lta = pos;
 
@@ -132,6 +137,10 @@ public class Pivot {
                 this.pos = highSpec;
                 break;
 
+            case "Zero":
+                this.pos = zero;
+                break;
+
             default:
                 this.pos = idle;
                 break;
@@ -165,6 +174,9 @@ public class Pivot {
             case "High Specimen":
                 pidController.setP(extendedKp);
                 break;
+            case "Zero":
+                pidController.setP(zeroKp);
+                break;
 
             default:
                 pidController.setP(kP);
@@ -192,6 +204,26 @@ public class Pivot {
     public double getKP()
     {
         return pidController.getP();
+    }
+
+    public void reset(){
+        setPos("Zero");
+        setKp("Zero");
+        update();
+        checkReset();
+
+    }
+
+    public void checkReset()
+    {
+        if (reset.isPressed)
+        {
+            curLeft = 0;
+            leftPivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightPivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
     }
 
 
