@@ -5,7 +5,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.arcrobotics.ftclib.controllers.PIDController;
+import com.arcrobotics.ftclib.controller.PIDController;
 
 import java.util.HashMap;
 
@@ -21,7 +21,7 @@ public class Extension {
     public static int specIntake = 1000, sampleIntake = 20, max = 2350, highBasket = 2350, lowBasket = 100, lowSpec = 20, highSpec = 1000, idle = 20;
     private int pos;
 
-    public static double kP = 0.01, kI = 0, kD = 0;
+    public static double kP = 0.005, kI = 0, kD = 0;
 
     private int curLeft;
 

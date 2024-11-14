@@ -7,7 +7,6 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -21,9 +20,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.SparkFunOTOSDrive;
-import org.firstinspires.ftc.teamcode.robot.Claw;
-import org.firstinspires.ftc.teamcode.robot.Lift;
-import org.firstinspires.ftc.teamcode.robot.Tilt;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.subsystems.Extension;
+import org.firstinspires.ftc.teamcode.subsystems.Pivot;
+import org.firstinspires.ftc.teamcode.subsystems.Wrist;
+
+import java.util.HashMap;
 
 /*
  * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
@@ -35,13 +38,12 @@ import org.firstinspires.ftc.teamcode.robot.Tilt;
  *
  * See the sensor's product page: https://www.sparkfun.com/products/24904
  */
-@TeleOp(name = "AutonBlue", group = "Sensor")
-public class AutonBlue extends LinearOpMode {
+@TeleOp(name = "preload sample only", group = "Sensor")
+public class PreloadSample extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;
+    public HashMap<String, String> deviceConf = new HashMap<String, String>();
 
-    //Claw claw = new Claw(hardwareMap);
-    //Lift lift = new Lift(hardwareMap);
 
     //Tilt tilt = new Tilt(hardwareMap);
 
@@ -49,6 +51,21 @@ public class AutonBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Get a reference to the sensor
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+
+        deviceConf.put("leftPivot",       "leftPivot");
+        deviceConf.put("rightPivot",      "rightPivot");
+        deviceConf.put("leftExtension",   "leftExtension");
+        deviceConf.put("rightExtension",  "rightExtension");
+        deviceConf.put("wrist",           "pivot");
+        deviceConf.put("reset",           "reset");
+
+        Claw claw = new Claw(hardwareMap);
+
+        //Pivot pivot = new Pivot(hardwareMap, deviceConf);
+
+        //Extension extension = new Extension(hardwareMap, deviceConf);
+
+        Wrist wrist = new Wrist(hardwareMap, deviceConf);
 
         // All the configuration for the OTOS is done in this helper method, check it out!
         configureOtos();
@@ -62,11 +79,12 @@ public class AutonBlue extends LinearOpMode {
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
-            Pose2d startPos = new Pose2d(36, 64, 3*Math.PI/2);
+            Pose2d startPos = new Pose2d(42, 64, 3*Math.PI/2);
             SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, startPos);
 
             TrajectoryActionBuilder bucket0 = drive.actionBuilder(startPos)
-                    .turnTo(Math.toRadians(-21.8))
+                    .lineToY(60)
+                    .turnTo(-0.2783)
                     .strafeTo(new Vector2d(56, 56))
                     .turnTo(Math.toRadians(225));
 
@@ -120,53 +138,18 @@ public class AutonBlue extends LinearOpMode {
             // Update the telemetry on the driver station
             telemetry.update();
 
-            //Actions.runBlocking(claw.closeClaw());
+            claw.directSet(0.55);
 
             if (isStopRequested()) return;
 
             Actions.runBlocking(
                     new SequentialAction(
-                            bucket0.build(),
-                            /*lift.armPreset("Bucket High"),
-                            tilt.tiltPreset("Bucket High"),
-                            claw.openClaw(),*/
+                            bucket0.build()
 
-                            wait1.build(),
-                            block1.build(),
-                            /*lift.armPreset("Floor"),
-                            tilt.tiltPreset("Floor"),
-                            claw.closeClaw(),*/
-                            wait1.build(),
-                            bucket1.build(),
-                            /*lift.armPreset("Bucket High"),
-                            tilt.tiltPreset("Bucket High"),
-                            claw.openClaw(),*/
-                            wait1.build(),
-
-                            block2.build(),
-                            wait1.build(),
-                            /*lift.armPreset("Floor"),
-                            tilt.tiltPreset("Floor"),
-                            claw.closeClaw(),*/
-                            bucket2.build(),
-                            wait1.build(),
-                            /*lift.armPreset("Bucket High"),
-                            tilt.tiltPreset("Bucket High"),
-                            claw.openClaw(),*/
-
-                            block3.build(),
-                            wait1.build(),
-                            /*lift.armPreset("Floor"),
-                            tilt.tiltPreset("Floor"),
-                            claw.closeClaw(),*/
-                            bucket3.build()
-                            /*lift.armPreset("Bucket High"),
-                            tilt.tiltPreset("Bucket High"),
-                            claw.openClaw(),*/
-
-                            //park.build()
                     )
             );
+            wrist.setPos("High Basket");
+            claw.directSet(0.21);
             requestOpModeStop();
 
         }

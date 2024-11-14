@@ -120,9 +120,14 @@ public class DriveTestSS extends LinearOpMode {
             }
 
             target = increment(gamepad1.right_bumper, gamepad1.left_bumper, sequence);
+            pivot.setPos(target);
+            if (!extensionManual)
+            {
+                extension.setPos(target);
+            }
             /*if (!extension.isBusy())
             {
-                pivot.setPos(target);
+
             }
 
             if (!extensionManual && !pivot.isBusy())
@@ -132,11 +137,6 @@ public class DriveTestSS extends LinearOpMode {
             if (!wristManual)
             {
                 wrist.setPos(target);
-            }
-
-            if (gamepad1.dpad_down)
-            {
-                drive.toggleSlowMode();
             }
 
             pivot.setKP(extension.getTarget());
