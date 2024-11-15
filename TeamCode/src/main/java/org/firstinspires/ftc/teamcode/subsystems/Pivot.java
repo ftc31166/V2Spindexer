@@ -63,7 +63,7 @@ public class Pivot {
         leftPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        reset = hwMap.get(RevTouchSensor.class, config.get("pivotReset"));
+        reset = hwMap.get(RevTouchSensor.class, config.get("reset"));
 
         profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(0, 0));
     }
@@ -73,7 +73,7 @@ public class Pivot {
         
         curLeft = leftPivot.getCurrentPosition();
         //curRight = rightPivot.getCurrentPosition();
-        checkReset();
+        //checkReset();
         if (pos != lta) {
             profile = new TrapezoidProfile(constraints, new TrapezoidProfile.State(pos, 0), new TrapezoidProfile.State(curLeft, aVelocity));
             fullTimer.reset();
@@ -208,15 +208,15 @@ public class Pivot {
 
     public void reset(){
         setPos("Zero");
-        setKp("Zero");
+        setKP("Zero");
         update();
         checkReset();
 
     }
 
-    public void checkReset()
+    public boolean checkReset()
     {
-        if (reset.isPressed)
+        if (reset.isPressed())
         {
             curLeft = 0;
             leftPivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -224,7 +224,22 @@ public class Pivot {
         leftPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+        return reset.isPressed();
     }
 
+    public void setDirectPos(int pos)
+    {
+        this.pos = pos;
+    }
+
+    public void setDirectKP(double Kp)
+    {
+        pidController.setP(kP);
+    }
+
+    public int getPos()
+    {
+        return leftPivot.getCurrentPosition();
+    }
 
 }

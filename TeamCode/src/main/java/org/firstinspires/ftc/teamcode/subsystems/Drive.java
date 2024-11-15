@@ -54,8 +54,13 @@ public class Drive {
     {
         for (int i = 0; i < millis; i ++)
         {
-            apply(u + ((v-u)/t));
-            wait(1);
+            applyPower(u + ((v-u)/millis) * i);
+            try {
+                Thread.sleep(1); // Wait for 1 millisecond
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restore interrupted status
+                // Optionally, log or handle the interruption
+            }
         }
     }
 

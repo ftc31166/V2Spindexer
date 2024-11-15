@@ -54,7 +54,7 @@ public class DriveTestSS extends LinearOpMode {
         Wrist wrist = new Wrist(hardwareMap, deviceConf);
 
         boolean pivotReady, wristReady, extensionReady, swapReady, cycleReady, clawReady;
-        boolean wristManual = false, extensionManual = false;
+        boolean wristManual = false, extensionManual = false, pivotManual = false;
 
 
         String sequence = "sample";
@@ -116,11 +116,18 @@ public class DriveTestSS extends LinearOpMode {
             if (gamepad2.right_bumper || gamepad2.left_bumper || gamepad1.right_bumper || gamepad1.left_bumper)
             {
                 wristManual = false;
-                extensionManual = false;
+                extensionManual = pivotManual =  false;
+
+            }
+
+            if (gamepad2.dpad_down && pivotReady) {
+                pivotManual = true;
+                pivot.reset();
+                pivotReady  = false;
             }
 
             target = increment(gamepad1.right_bumper, gamepad1.left_bumper, sequence);
-            pivot.setPos(target);
+
             if (!extensionManual)
             {
                 extension.setPos(target);
@@ -138,9 +145,14 @@ public class DriveTestSS extends LinearOpMode {
             {
                 wrist.setPos(target);
             }
+            if (!pivotManual)
+            {
+                pivot.setPos(target);
+            }
+
 
             pivot.setKP(extension.getTarget());
-            extension.checkReset();
+            pivot.checkReset();
 
             drive.update();
             pivot.update();

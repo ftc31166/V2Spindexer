@@ -13,7 +13,7 @@ public class Claw {
 
     public Claw(HardwareMap hardwareMap) {
         claw = hardwareMap.servo.get("claw");
-        claw.setPosition(closed);
+        claw.setPosition(open);
     }
 
     public void update(boolean gp) {

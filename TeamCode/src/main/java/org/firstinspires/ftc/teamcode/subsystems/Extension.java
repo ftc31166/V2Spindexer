@@ -18,7 +18,7 @@ public class Extension {
 
     public String posStr = "";
 
-    public static int specIntake = 1000, sampleIntake = 20, max = 2350, highBasket = 2350, lowBasket = 100, lowSpec = 20, highSpec = 1000, idle = 20;
+    public static int specIntake = 1000, sampleIntake = 5, max = 2350, highBasket = 2350, lowBasket = 100, lowSpec = 5, highSpec = 1000, idle = 5;
     private int pos;
 
     public static double kP = 0.005, kI = 0, kD = 0;
@@ -33,7 +33,7 @@ public class Extension {
         leftExtension = hwMap.dcMotor.get(config.get("leftExtension"));
         rightExtension = hwMap.dcMotor.get(config.get("rightExtension"));
 
-        reset = hwMap.get(RevTouchSensor.class, config.get("reset"));
+        //reset = hwMap.get(RevTouchSensor.class, config.get("reset"));
 
         rightExtension.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -111,7 +111,7 @@ public class Extension {
         return posStr;
     }
 
-    public void checkReset()
+    /*public void checkReset()
     {
         if(reset.isPressed())
         {
@@ -120,11 +120,15 @@ public class Extension {
             leftExtension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightExtension.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-    }
+    }*/
 
     public boolean check(int cur, int target, int thresh)
     {
         return Math.abs(cur - target) < thresh;
+    }
+    public int getError()
+    {
+        return pos - curLeft;
     }
 
 }
