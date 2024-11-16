@@ -21,7 +21,7 @@ public class Extension {
     public static int specIntake = 1000, sampleIntake = 5, max = 2350, highBasket = 2350, lowBasket = 100, lowSpec = 5, highSpec = 1000, idle = 5;
     private int pos;
 
-    public static double kP = 0.005, kI = 0, kD = 0;
+    public static double kP = 0.01, kI = 0, kD = 0;
 
     private int curLeft;
 

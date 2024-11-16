@@ -23,7 +23,7 @@ public class Pivot {
 
     public static double power = 0, lastPower = power;
 
-    public static int intake = 30, max = 325, highBasket = 300, lowSpec = 120, highSpec = 200, idle = 300, zero = 0;
+    public static int intake = 29, max = 325, highBasket = 300, lowSpec = 120, highSpec = 200, idle = 300, zero = 0, highSpecDepo = 100;
     private int pos;
 
     public static double kP = 0.01, kI = 0, kD = 0, k = 0;
@@ -139,6 +139,10 @@ public class Pivot {
 
             case "Zero":
                 this.pos = zero;
+                break;
+
+            case "High Spec Depo":
+                this.pos = highSpecDepo;
                 break;
             
 

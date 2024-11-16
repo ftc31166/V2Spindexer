@@ -30,9 +30,9 @@ import java.util.HashMap;
  *
  * See the sensor's product page: https://www.sparkfun.com/products/24904
  */
-@Autonomous(name = "preload specimen only")
+@Autonomous(name = "reset only")
 @Config
-public class PreloadSpec extends LinearOpMode {
+public class reset extends LinearOpMode {
     public static double u = 0, v = 0.4;
     public static int t = 130, change = 10;
     public HashMap<String, String> deviceConf = new HashMap<String, String>();
@@ -67,17 +67,14 @@ public class PreloadSpec extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap, deviceConf);
 
-        Thread update = new Thread(()->updateAll(pivot, extension, wrist));
-        claw.directSet(0.55);
+
 
 
 
 
         // Wait for the start button to be pressed
         waitForStart();
-
-        wrist.setPos("High Basket");
-        wrist.update();
+        claw.directSet(0.55);
 
         while (!pivot.checkReset() && opModeIsActive())
         {
@@ -97,61 +94,12 @@ public class PreloadSpec extends LinearOpMode {
             }
         }
         pivot.checkReset();
-        update.start();
-        pivot.setPos("High Specimen");
-        pivot.setKP("High Specimen");
-        sleep(1000);
-        extension.setPos("High Specimen");
-        wrist.setPos("High Specimen");
-
-
-        sleep(1000);
 
         drive.accelerateForward(u, v, t);
-        telemetry.addData("slow", 1);
-        telemetry.update();
-        drive.applyPower(0);
-        sleep(1000);
-        pivot.setPos("High Spec Depo");
-        sleep(2000);
-        claw.directSet(clawOpen);
-        sleep(1000);
-        wrist.setPos("Idle");
-        pivot.setPos("Low Specimen");
-        sleep(1000);
-        extension.setPos("Idle");
-
-        sleep(2000);
-        pivot.setPos("Sample Intake");
-        drive.accelerateForward(u, -v, t-change);
         drive.applyPower(0);
 
+
     }
 
-    public void updateAll(Pivot pivot, Extension extension, Wrist wrist)
-    {
-        while (opModeIsActive())
-        {
-
-            pivot.setKP("High Basket");
-            pivot.update();
-            extension.update();
-            wrist.update();
-            telemetry.addData("pos", pivot.getPos());
-            telemetry.addData("target", pivot.getPos() - 10);
-            telemetry.addData("error", pivot.getError());
-            telemetry.update();
-        }
-    }
-
-    public void sleep(int t)
-    {
-        try {
-            Thread.sleep(t); // Wait for 1 millisecond
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Restore interrupted status
-            // Optionally, log or handle the interruption
-        }
-    }
 
 }

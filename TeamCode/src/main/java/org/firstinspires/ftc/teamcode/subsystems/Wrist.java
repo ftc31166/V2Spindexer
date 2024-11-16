@@ -10,7 +10,7 @@ public class Wrist {
 
     Servo wrist;
 
-    public static double intake = 0.5, basket = 0.4, idle = 0.3, lowSpec = 0.5, highSpec = 0.4, realIntake = 1;
+    public static double intake = 0.3, basket = 0.3, idle = 0.3, lowSpec = 0.5, highSpec = 0.45, realIntake = 0.75;
     private double pos;
 
     public String posStr = "";

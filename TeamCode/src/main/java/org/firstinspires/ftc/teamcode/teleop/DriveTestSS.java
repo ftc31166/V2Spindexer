@@ -25,7 +25,7 @@ public class DriveTestSS extends LinearOpMode {
 
     public HashMap<String, String> deviceConf = new HashMap<String, String>();
 
-    public static int tickChange = 5;
+    public static int tickChange = 50;
 
     public static double clawOpen = 0.21, clawClose = 0.55;
 
@@ -113,6 +113,22 @@ public class DriveTestSS extends LinearOpMode {
                 extensionReady  = false;
             }
 
+            if (gamepad2.dpad_down && pivotReady) {
+                pivotManual = true;
+                pivot.checkReset();
+                pivotReady  = false;
+            }
+            if (gamepad1.dpad_right && pivotReady) {
+                pivotManual = true;
+                pivot.setDirectPos(pivot.getPos()-tickChange);
+                pivotReady  = false;
+            }
+
+            if (gamepad1.dpad_left && pivotReady) {
+                pivotManual = true;
+                pivot.setDirectPos(pivot.getPos()+tickChange);
+                pivotReady  = false;
+            }
             if (gamepad2.right_bumper || gamepad2.left_bumper || gamepad1.right_bumper || gamepad1.left_bumper)
             {
                 wristManual = false;
@@ -120,11 +136,10 @@ public class DriveTestSS extends LinearOpMode {
 
             }
 
-            if (gamepad2.dpad_down && pivotReady) {
-                pivotManual = true;
-                pivot.reset();
-                pivotReady  = false;
-            }
+
+
+
+
 
             target = increment(gamepad1.right_bumper, gamepad1.left_bumper, sequence);
 
