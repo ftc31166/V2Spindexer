@@ -140,6 +140,7 @@ public class Pivot {
             case "Zero":
                 this.pos = zero;
                 break;
+            
 
             default:
                 this.pos = idle;
@@ -178,6 +179,10 @@ public class Pivot {
                 pidController.setP(zeroKp);
                 break;
 
+            case "High Spec Depo":
+                pidController.setP(extendedKp);
+                break;
+                
             default:
                 pidController.setP(kP);
                 break;

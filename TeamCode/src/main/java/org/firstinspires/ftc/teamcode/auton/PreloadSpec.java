@@ -39,6 +39,8 @@ public class PreloadSpec extends LinearOpMode {
 
     public static double clawOpen = 0.21, clawClose = 0.55;
 
+    private ElapsedTime timer = new ElapsedTime();
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -63,13 +65,15 @@ public class PreloadSpec extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap, deviceConf);
 
+        Thread update = new Thread(()->updateAll());
+
 
 
         // Wait for the start button to be pressed
         waitForStart();
         claw.directSet(0.55);
 
-        /*while (!pivot.checkReset() && opModeIsActive())
+        while (!pivot.checkReset() && opModeIsActive())
         {
             pivot.setDirectPos(pivot.getPos() - tickChange);
             telemetry.addData("pos", pivot.getPos());
@@ -81,23 +85,50 @@ public class PreloadSpec extends LinearOpMode {
             {
                 pivot.applyPower(0);
             }
-        }*/
-        //pivot.setPos("High Specimen");
-        //pivot.setKP("Idle");
-        //extension.setPos("High Specimen");
-        //wrist.setPos("High Specimen");
-        // Loop until the OpMode ends
+        }
+        pivot.setPos("High Specimen");
+        pivot.setKP("High Specimen");
+        extension.setPos("High Specimen");
+        wrist.setPos("High Specimen");
+        update.start();
+
+        sleep(3000);
+
         drive.accelerateForward(u, v, t);
         telemetry.addData("slow", 1);
         telemetry.update();
         drive.applyPower(0);
-        while (opModeIsActive()) {
+        sleep(2000);
+        pivot.setPos("High Spec Depo");
+        sleep(5000);
+        claw.directSet(clawOpen);
+        extension.setPos("Idle");
+        sleep(2000);
+        pivot.setPos("Sample Intake");
+        drive.accelerateForward(u, -v, t);
+        drive.applyPower(0);
 
-            //pivot.update();
-            //extension.update();
+    }
 
+    public void updateAll()
+    {
+        while (opModeIsActive())
+        {
 
+        pivot.setKP(extension.getPos());
+        pivot.update();
+        extension.update();
         }
     }
 
+    public void sleep(int t)
+    {
+        try {
+            Thread.sleep(t); // Wait for 1 millisecond
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restore interrupted status
+            // Optionally, log or handle the interruption
+        }
     }
+
+}

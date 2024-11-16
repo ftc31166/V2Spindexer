@@ -152,7 +152,7 @@ public class DriveTestSS extends LinearOpMode {
 
 
             pivot.setKP(extension.getTarget());
-            pivot.checkReset();
+            //pivot.checkReset();
 
             drive.update();
             pivot.update();
