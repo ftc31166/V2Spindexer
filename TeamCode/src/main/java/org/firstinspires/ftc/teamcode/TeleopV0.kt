@@ -99,9 +99,9 @@ class TeleopV0 : LinearOpMode() {
             } else {
                 horz.power = 0.0
             }
-            val y = gamepad1.left_stick_y.toDouble() // Remember, Y stick value is reversed
-            val x = gamepad1.left_stick_x * 1.1 // Counteract imperfect strafing
-            var rx = gamepad1.right_stick_x.toDouble()
+            val y = -gamepad1.left_stick_y.toDouble() // Remember, Y stick value is reversed
+            val x = -gamepad1.left_stick_x * 1.1 // Counteract imperfect strafing
+            val rx = -gamepad1.right_stick_x.toDouble()
 
             if (abs(rx) < 0.1) {
                 lastTurnInputTime = System.currentTimeMillis()
