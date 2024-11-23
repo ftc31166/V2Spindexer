@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode
+package org.firstinspires.ftc.teamcode.manual
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -12,7 +12,7 @@ import kotlin.math.max
 import kotlin.math.sin
 
 @TeleOp
-class barebones : LinearOpMode() {
+class Barebones : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
         // Declare our motors
@@ -63,7 +63,7 @@ class barebones : LinearOpMode() {
             var rotX = x * cos(-botHeading) - y * sin(-botHeading)
             val rotY = x * sin(-botHeading) + y * cos(-botHeading)
 
-            rotX = rotX * 1.1 // Counteract imperfect strafing
+            rotX *= 1.1 // Counteract imperfect strafing
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
