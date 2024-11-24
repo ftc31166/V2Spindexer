@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode
 
 import com.arcrobotics.ftclib.controller.PIDController
+import com.outoftheboxrobotics.photoncore.Photon
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -16,6 +17,7 @@ import kotlin.math.sin
 
 
 @TeleOp
+@Photon
 class TeleopV0 : LinearOpMode() {
 
     private enum class State {
