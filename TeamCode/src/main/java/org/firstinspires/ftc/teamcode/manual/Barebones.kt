@@ -44,7 +44,7 @@ class Barebones : LinearOpMode() {
         waitForStart()
 
         if (isStopRequested) return
-
+        var lastTime = System.currentTimeMillis()
         while (opModeIsActive()) {
             val y = -gamepad1.left_stick_y.toDouble() // Remember, Y stick value is reversed
             val x = gamepad1.left_stick_x.toDouble()
@@ -78,6 +78,11 @@ class Barebones : LinearOpMode() {
             backLeftMotor.power = backLeftPower
             frontRightMotor.power = frontRightPower
             backRightMotor.power = backRightPower
+
+            telemetry.addData("Time", System.currentTimeMillis() - lastTime)
+            telemetry.addLine("HFUew")
+            lastTime = System.currentTimeMillis()
+            telemetry.update()
         }
     }
 }

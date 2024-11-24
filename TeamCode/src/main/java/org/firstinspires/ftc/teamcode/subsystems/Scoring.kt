@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.arcrobotics.ftclib.controller.PIDController
 import com.qualcomm.hardware.rev.RevColorSensorV3
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.ServoImplEx
@@ -31,10 +33,10 @@ class Scoring(
     //TODO CV4B0I: Transfer 0.0, Scoring 0.9
     //TODO CV4B1I: Transfer 0.88, Scoring 0.05
     //TODO FIX GRABBING LOGIC TO USE COLOR instead of distance.
-    var visionPortal: VisionPortal = org.firstinspires.ftc.vision.VisionPortal.Builder()
+    /*var visionPortal: VisionPortal = org.firstinspires.ftc.vision.VisionPortal.Builder()
         .setCamera(hardwareMap.get<WebcamName>(WebcamName::class.java, "Webcam 1"))
         .addProcessor(blockDetector)
-        .build()
+        .build()*/
 
     private enum class State {
         IDLE,
@@ -43,18 +45,48 @@ class Scoring(
         GRABBING,
         GRABBED,
     }
+    val horz = hardwareMap.dcMotor["horz"];
+    val pid = PIDController(0.02,0.0,0.001)
+    var target = 0.0
+    private var state = State.EXTENDING
 
-
-
-    private var state = State.ALIGNING
+    init {
+        horz.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        horz.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+    }
 
     fun update() {
         val block = blockDetector.closestBlock
         val angle = blockDetector.angle
         val size = blockDetector.size
-
+        if (abs(horz.currentPosition.toDouble() - target) > 10) {
+            horz.power = pid.calculate(horz.currentPosition.toDouble(), target)
+        } else {
+            horz.power = 0.0
+        }
+        if (gamepad2.left_bumper) {
+            claw.position = 0.4
+        }
+        if (gamepad2.right_bumper) {
+            claw.position = 1.0
+        }
+        //horz.power = gamepad2.right_stick_y.toDouble()
         when (state) {
+
+            State.EXTENDING -> {
+                target = 200.0
+
+                if (abs(horz.currentPosition.toDouble() - target) < 10) {
+                    state = State.ALIGNING
+                    timeSinceStateChange.reset()
+                }
+                CV4B1I.position = 0.05
+                CV4B0I.position = 0.6
+            }
+
             State.ALIGNING -> {
+                state = State.GRABBING
+                /*
                 CV4B0I.position = 0.5
                 CV4B1I.position = 0.05
                 var deltaW = 0.7
@@ -72,8 +104,11 @@ class Scoring(
                         timeSinceStateChange.reset()
                     }
                 }
+                */
             }
             State.GRABBING -> {
+                CV4B1I.position = 0.05
+                /*
                 if (timeSinceStateChange.seconds() > 1) {
                     state = State.ALIGNING
                     timeSinceStateChange.reset()
@@ -87,7 +122,7 @@ class Scoring(
                 } else {
                     claw.position = 0.55
                 }
-                if (gamepad1.a) {
+                if (gamepad2.a) {
                     state = State.ALIGNING
                     timeSinceStateChange.reset()
                 }
@@ -95,14 +130,37 @@ class Scoring(
                     CV4B0I.position = 0.75
                 } else {
                     CV4B0I.position = 0.79
+                }*/
+                if (gamepad2.a) {
+                    timer.reset()
+                    CV4B0I.position = 0.85
+                } else {
+                    CV4B0I.position = 0.6
                 }
+                if (false){
+                    claw.position = 0.8
+                    timeSinceStateChange.reset()
+                } else if (false) {
+                    claw.position = 0.4
+                }
+                if (timer.seconds() > 0.25 && gamepad2.a) {
+                    claw.position = 0.8
+                }
+                if (gamepad2.x) {
+                    state = State.GRABBED
+                }
+                wrist.position = (gamepad2.left_stick_x.toDouble() + 1.0) / 2
             }
             State.GRABBED -> {
-                CV4B0I.position = 0.5
-                if (gamepad1.a || (sensor.getDistance(DistanceUnit.MM) > 50 && timeSinceStateChange.seconds() > 0.5)) {
-                    state = State.ALIGNING
+                target = 50.0
+                CV4B1I.position = 0.85
+                CV4B0I.position = 0.0
+                if (gamepad2.b) {
+                    state = State.EXTENDING
                     timeSinceStateChange.reset()
-                    claw.position = 0.7
+                }
+                if (gamepad2.y) {
+                    claw.position = 0.4
                 }
                 wristPosition = 0.5
             }
@@ -116,7 +174,8 @@ class Scoring(
         telemetry.addData("Block Size", size)
         telemetry.addData("Block Distance", sensor.getDistance(DistanceUnit.MM))
         telemetry.addData("Time", timeSinceStateChange.seconds())
-        readyForTransfer = state == State.GRABBED
-        wrist.position = wristPosition
+        telemetry.addData("Horz Encoder", horz.currentPosition)
+        //readyForTransfer = state == State.GRABBED
+        //wrist.position = wristPosition
     }
 }
