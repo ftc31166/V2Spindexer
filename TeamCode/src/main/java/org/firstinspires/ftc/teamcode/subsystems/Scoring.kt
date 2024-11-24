@@ -24,7 +24,7 @@ class Scoring(
     private val timeSinceStateChange = ElapsedTime()
     private val timer = ElapsedTime()
     private val wrist: ServoImplEx = hardwareMap.get(ServoImplEx::class.java, "wristI")
-    private val blockDetector: BlockDetectorProcessor = BlockDetectorProcessor(telemetry) // Assuming BlockDetectorProcessor is accessible
+    //private val blockDetector: BlockDetectorProcessor = BlockDetectorProcessor(telemetry) // Assuming BlockDetectorProcessor is accessible
     private val claw = hardwareMap.get(ServoImplEx::class.java, "clawI")
     private val sensor = hardwareMap.get(RevColorSensorV3::class.java, "Color")
     private var wristPosition = 0.5
@@ -56,9 +56,9 @@ class Scoring(
     }
 
     fun update() {
-        val block = blockDetector.closestBlock
-        val angle = blockDetector.angle
-        val size = blockDetector.size
+        //val block = blockDetector.closestBlock
+        //val angle = blockDetector.angle
+        //val size = blockDetector.size
         if (abs(horz.currentPosition.toDouble() - target) > 10) {
             horz.power = pid.calculate(horz.currentPosition.toDouble(), target)
         } else {
@@ -170,8 +170,8 @@ class Scoring(
         }
         telemetry.addData("State", state)
         telemetry.addData("Wrist Position", wristPosition)
-        telemetry.addData("Block Angle", angle)
-        telemetry.addData("Block Size", size)
+        //telemetry.addData("Block Angle", angle)
+        //telemetry.addData("Block Size", size)
         telemetry.addData("Block Distance", sensor.getDistance(DistanceUnit.MM))
         telemetry.addData("Time", timeSinceStateChange.seconds())
         telemetry.addData("Horz Encoder", horz.currentPosition)
