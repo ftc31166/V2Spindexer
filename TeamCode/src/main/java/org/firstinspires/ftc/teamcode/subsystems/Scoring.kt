@@ -172,7 +172,7 @@ class Scoring(
         telemetry.addData("Wrist Position", wristPosition)
         //telemetry.addData("Block Angle", angle)
         //telemetry.addData("Block Size", size)
-        telemetry.addData("Block Distance", sensor.getDistance(DistanceUnit.MM))
+        //telemetry.addData("Block Distance", sensor.getDistance(DistanceUnit.MM))
         telemetry.addData("Time", timeSinceStateChange.seconds())
         telemetry.addData("Horz Encoder", horz.currentPosition)
         //readyForTransfer = state == State.GRABBED
