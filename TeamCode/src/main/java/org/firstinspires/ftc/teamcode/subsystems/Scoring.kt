@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
+import dev.frozenmilk.dairy.cachinghardware.CachingServo
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -23,13 +24,12 @@ class Scoring(
     var readyForTransfer = false
     private val timeSinceStateChange = ElapsedTime()
     private val timer = ElapsedTime()
-    private val wrist: ServoImplEx = hardwareMap.get(ServoImplEx::class.java, "wristI")
-    //private val blockDetector: BlockDetectorProcessor = BlockDetectorProcessor(telemetry) // Assuming BlockDetectorProcessor is accessible
-    private val claw = hardwareMap.get(ServoImplEx::class.java, "clawI")
-    private val sensor = hardwareMap.get(RevColorSensorV3::class.java, "Color")
+    private val wrist: CachingServo = CachingServo(hardwareMap.servo["wristI"])
+    private val claw: CachingServo = CachingServo(hardwareMap.servo["clawI"])
+    private val CV4B0I: CachingServo = CachingServo(hardwareMap.servo["CV4B0I"])
+    private val CV4B1I: CachingServo = CachingServo(hardwareMap.servo["CV4B1I"])
+    private val sensor = hardwareMap.colorSensor["Color"]
     private var wristPosition = 0.5
-    private val CV4B0I = hardwareMap.servo.get("CV4B0I")
-    private val CV4B1I = hardwareMap.servo.get("CV4B1I")
     //TODO CV4B0I: Transfer 0.0, Scoring 0.9
     //TODO CV4B1I: Transfer 0.88, Scoring 0.05
     //TODO FIX GRABBING LOGIC TO USE COLOR instead of distance.

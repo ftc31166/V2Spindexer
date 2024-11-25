@@ -7,8 +7,10 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.IMU
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.subsystems.Scoring
 import kotlin.math.abs
@@ -36,10 +38,10 @@ class TeleopV0 : LinearOpMode() {
         }
 
         val scoring = Scoring(hardwareMap, telemetry, gamepad1, gamepad2)
-        val backLeft = hardwareMap.dcMotor.get("backLeft")
-        val backRight = hardwareMap.dcMotor.get("backRight")
-        val frontLeft = hardwareMap.dcMotor.get("frontLeft")
-        val frontRight = hardwareMap.dcMotor.get("frontRight")
+        val backLeft = CachingDcMotorEx(hardwareMap.dcMotor["backLeft"] as DcMotorEx)
+        val backRight = CachingDcMotorEx(hardwareMap.dcMotor["backRight"] as DcMotorEx)
+        val frontLeft = CachingDcMotorEx(hardwareMap.dcMotor["frontLeft"] as DcMotorEx)
+        val frontRight = CachingDcMotorEx(hardwareMap.dcMotor["frontRight"] as DcMotorEx)
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
         backLeft.direction = DcMotorSimple.Direction.REVERSE
         backLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
