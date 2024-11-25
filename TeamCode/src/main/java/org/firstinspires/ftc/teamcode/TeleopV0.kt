@@ -18,7 +18,6 @@ import kotlin.math.sin
 
 
 @TeleOp
-@Photon
 class TeleopV0 : LinearOpMode() {
 
     val DT_ACTIVE = true
