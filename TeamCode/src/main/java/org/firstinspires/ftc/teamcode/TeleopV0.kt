@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode
 
-import com.arcrobotics.ftclib.controller.PIDController
 import com.outoftheboxrobotics.photoncore.Photon
 import com.qualcomm.hardware.lynx.LynxModule
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.IMU
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.subsystems.Scoring
 import kotlin.math.abs
 import kotlin.math.cos
@@ -22,15 +21,8 @@ import kotlin.math.sin
 @Photon
 class TeleopV0 : LinearOpMode() {
 
-    private enum class State {
-        INTAKING_SAMPLE,
-        TRANSFERRING,
-        OUTTAKING_SAMPLE,
-        INTAKING_SPECIMEN,
-        OUTTAKING_SPECIMEN,
-    }
-
     val DT_ACTIVE = true
+
     override fun runOpMode() {
         val allHubs : List<LynxModule> = hardwareMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
@@ -42,6 +34,9 @@ class TeleopV0 : LinearOpMode() {
         val backRight = CachingDcMotorEx(hardwareMap.dcMotor["backRight"] as DcMotorEx)
         val frontLeft = CachingDcMotorEx(hardwareMap.dcMotor["frontLeft"] as DcMotorEx)
         val frontRight = CachingDcMotorEx(hardwareMap.dcMotor["frontRight"] as DcMotorEx)
+
+        val otos = hardwareMap[SparkFunOTOS::class.java, "sensor_otos"]
+
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
         backLeft.direction = DcMotorSimple.Direction.REVERSE
         backLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
@@ -49,7 +44,15 @@ class TeleopV0 : LinearOpMode() {
         frontLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         frontRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-        var state = State.INTAKING_SAMPLE
+        otos.linearUnit = DistanceUnit.INCH
+        otos.angularUnit = AngleUnit.RADIANS
+        otos.linearScalar = 0.983
+        otos.angularScalar = 0.9898
+        telemetry.addLine("Calibrating OTOS")
+        telemetry.update()
+        otos.calibrateImu(1000, true)
+        telemetry.addLine("Calibrated OTOS")
+        telemetry.update()
 
         val horz = hardwareMap.dcMotor["horz"]
         horz.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
@@ -58,33 +61,26 @@ class TeleopV0 : LinearOpMode() {
 
         waitForStart()
         while (opModeIsActive()) {
-
-            when (state) {
-                State.INTAKING_SAMPLE -> {
-                    scoring.update()
-                }
-                State.OUTTAKING_SAMPLE -> TODO()
-                State.INTAKING_SPECIMEN -> TODO()
-                State.OUTTAKING_SPECIMEN -> TODO()
-                State.TRANSFERRING -> TODO()
-            }
+            scoring.update()
             val y = -gamepad1.left_stick_y.toDouble() // Remember, Y stick value is reversed
             val x = -gamepad1.left_stick_x * 1.1 // Counteract imperfect strafing
             val rx = -gamepad1.right_stick_x.toDouble()
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
-            var denominator: Double = Math.max(abs(x) + abs(y) + abs(rx), 1.0)
-            var frontLeftPower = (y + x + rx) / denominator
-            var backLeftPower = (y - x + rx) / denominator
-            var frontRightPower = (y - x - rx) / denominator
-            var backRightPower = (y + x - rx) / denominator
+
+            val botHeading = otos.position.h
+
+            val rotX = x * cos(-botHeading) - y * sin(-botHeading)
+            val rotY = x * sin(-botHeading) + y * cos(-botHeading)
+
+            val denominator: Double = Math.max(abs(rotX) + abs(rotY) + abs(rx), 1.0)
 
             if (DT_ACTIVE) {
-                frontLeft.power = frontLeftPower
-                backLeft.power = backLeftPower
-                frontRight.power = frontRightPower
-                backRight.power = backRightPower
+                frontLeft.power = (rotY + rotX + rx) / denominator
+                backLeft.power = (rotY - rotX + rx) / denominator
+                frontRight.power = (rotY - rotX - rx) / denominator
+                backRight.power = (rotY + rotX - rx) / denominator
             } else {
                 frontLeft.power = 0.0
                 backLeft.power = 0.0
