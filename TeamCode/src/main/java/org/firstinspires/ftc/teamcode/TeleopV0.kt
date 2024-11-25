@@ -19,7 +19,6 @@ import kotlin.math.sin
 
 
 @TeleOp
-@Photon
 class TeleopV0 : LinearOpMode() {
 
     private enum class State {
