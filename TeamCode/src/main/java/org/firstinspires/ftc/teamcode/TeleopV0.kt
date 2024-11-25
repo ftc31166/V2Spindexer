@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode
 
-import com.outoftheboxrobotics.photoncore.Photon
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
