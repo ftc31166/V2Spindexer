@@ -49,6 +49,7 @@ class TeleopV0 : LinearOpMode() {
         telemetry.addLine("Calibrating OTOS")
         telemetry.update()
         otos.calibrateImu(1000, true)
+        otos.position = SparkFunOTOS.Pose2D(0.0,0.0,0.0)
         telemetry.addLine("Calibrated OTOS")
         telemetry.update()
 
@@ -67,7 +68,7 @@ class TeleopV0 : LinearOpMode() {
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
 
-            val botHeading = otos.position.h
+            val botHeading = -otos.position.h
 
             val rotX = x * cos(-botHeading) - y * sin(-botHeading)
             val rotY = x * sin(-botHeading) + y * cos(-botHeading)
@@ -92,6 +93,7 @@ class TeleopV0 : LinearOpMode() {
             for (hub in allHubs) {
                 hub.clearBulkCache()
             }
+            telemetry.addData("Botheading", botHeading)
         }
     }
 
