@@ -74,17 +74,25 @@ class TeleopV0 : LinearOpMode() {
             val rotY = x * sin(-botHeading) + y * cos(-botHeading)
 
             val denominator: Double = Math.max(abs(rotX) + abs(rotY) + abs(rx), 1.0)
-
+            val mult: Double
+            if (gamepad1.right_bumper) {
+                mult = 0.5
+            } else {
+                mult = 1.0
+            }
             if (DT_ACTIVE) {
-                frontLeft.power = (rotY + rotX + rx) / denominator
-                backLeft.power = (rotY - rotX + rx) / denominator
-                frontRight.power = (rotY - rotX - rx) / denominator
-                backRight.power = (rotY + rotX - rx) / denominator
+                frontLeft.power = (y + x + rx) / denominator * mult
+                backLeft.power = (y - x + rx) / denominator * mult
+                frontRight.power = (y - x - rx) / denominator * mult
+                backRight.power = (y + x - rx) / denominator * mult
             } else {
                 frontLeft.power = 0.0
                 backLeft.power = 0.0
                 frontRight.power = 0.0
                 backRight.power = 0.0
+            }
+            if (gamepad2.dpad_down) {
+                otos.position = SparkFunOTOS.Pose2D(0.0,0.0,0.0)
             }
 
             telemetry.addData("Time", System.currentTimeMillis() - lastTime)

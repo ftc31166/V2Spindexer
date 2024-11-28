@@ -4,18 +4,19 @@ import com.arcrobotics.ftclib.controller.PIDController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.ElapsedTime
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx
 import dev.frozenmilk.dairy.cachinghardware.CachingServo
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
+import org.firstinspires.ftc.teamcode.utils.ServoSwap
 import org.firstinspires.ftc.teamcode.vision.BlockDetectorProcessor
 import org.firstinspires.ftc.vision.VisionPortal
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 
 class Scoring(
@@ -23,37 +24,50 @@ class Scoring(
     private var telemetry: Telemetry,
     private val gamepad1: Gamepad,
     private val gamepad2: Gamepad) {
+
     var readyForTransfer = false
+
     private val timeSinceStateChange = ElapsedTime()
     private val timer = ElapsedTime()
-    private val wrist: CachingServo = CachingServo(hardwareMap.servo["wristI"])
-    private val claw: CachingServo = CachingServo(hardwareMap.servo["clawI"])
-    private val CV4B0I: CachingServo = CachingServo(hardwareMap.servo["CV4B0I"])
-    private val CV4B1I: CachingServo = CachingServo(hardwareMap.servo["CV4B1I"])
+
+    private val wristI: CachingServo = CachingServo(hardwareMap.servo["wristI"])
+    private val clawI: CachingServo = CachingServo(hardwareMap.servo["clawI"])
+    private val clawISwap = ServoSwap(clawI, 1.0, 0.8, true)
+
+    private val CV4B0I = hardwareMap.servo["CV4B0I"]
+    private val CV4B1I = hardwareMap.servo["CV4B1I"]
+
+    private val CV4B0O = hardwareMap.servo["CV4B0O"]
+    private val CV4B1O = hardwareMap.servo["CV4B1O"]
+
+    private val clawO: CachingServo = CachingServo(hardwareMap.servo["clawO"])
+    private val wristO = hardwareMap.servo["wristO"]
+    private val clawOSwap = ServoSwap(clawO, 0.35, 0.64, true)
+
     val blockDetector = BlockDetectorProcessor(telemetry)
     private var wristPosition = 0.5
-    //TODO CV4B0I: Transfer 0.0, Scoring 0.9
-    //TODO CV4B1I: Transfer 0.88, Scoring 0.05
-    //TODO FIX GRABBING LOGIC TO USE COLOR instead of distance.
+    /*
     var visionPortal: VisionPortal = org.firstinspires.ftc.vision.VisionPortal.Builder()
         .setCamera(hardwareMap.get<WebcamName>(WebcamName::class.java, "Webcam 1"))
         .addProcessor(blockDetector)
-        .build()
+        .build()*/
 
     private enum class State {
         IDLE,
-        EXTENDING,
-        ALIGNING,
-        GRABBING,
-        GRABBED,
+        GRABBING_SAMPLE,
+        GRABBED_SAMPLE,
+        TRANSFERRED,
+        GRABBING_SPECIMEN,
+        GRABBED_SPECIMEN,
+        EXPANDED
     }
     val horz = CachingDcMotorEx(hardwareMap.dcMotor["horz"] as DcMotorEx)
     val vert1 = CachingDcMotorEx(hardwareMap.dcMotor["vert1"] as DcMotorEx)
     val vert0 = CachingDcMotorEx(hardwareMap.dcMotor["vert0"] as DcMotorEx)
 
-    val pid = PIDController(0.02,0.0,0.001)
+    val pid = PIDController(0.04,0.0,0.001)
     var target = 0.0
-    private var state = State.ALIGNING
+    private var state = State.IDLE
     var pin0 = hardwareMap.digitalChannel["i0"]
     var pin1 = hardwareMap.digitalChannel["i1"]
 
@@ -68,69 +82,167 @@ class Scoring(
     }
 
     fun update() {
+
         val block = blockDetector.closestBlock
         val angle = blockDetector.angle
         val size = blockDetector.size
-        if (abs(horz.currentPosition.toDouble() - target) > 10) {
-            horz.power = pid.calculate(horz.currentPosition.toDouble(), target)
-        } else {
-            horz.power = 0.0
+        if (gamepad2.touchpad_finger_1 && gamepad1.touchpad_finger_1) {
+            state = State.EXPANDED
         }
-        if (gamepad2.left_bumper) {
-            claw.position = 0.4
-        }
-        if (gamepad2.right_bumper) {
-            claw.position = 1.0
-        }
-        wrist.position = wristPosition
-        //horz.power = gamepad2.right_stick_y.toDouble()
-        when (state) {
-            State.ALIGNING -> {
-                state = State.GRABBING
+        if (abs(gamepad2.right_trigger) < 0.1) {
+            if (abs(horz.currentPosition.toDouble() - target) > 5) {
+                val tp: Double = pid.calculate(horz.currentPosition.toDouble(), target)
+                if (tp > 0.0) {
+                    horz.power = max(0.2, tp)
+                } else {
+                    horz.power = min(-0.2, tp)
+                }
+                horz.power = tp
+            } else {
+                horz.power = 0.0
             }
-            State.GRABBING -> {
+        } else {
+            horz.power = -gamepad2.right_trigger.toDouble()
+        }
+        if (gamepad2.back) {
+            horz.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            horz.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        }
+        clawISwap.update(gamepad2.right_bumper)
+        clawOSwap.update(gamepad2.left_bumper)
+        wristI.position = wristPosition
+        //horz.power = gamepad2.right_stick_y.toDouble()
+        if (gamepad2.circle) {
+            state = State.GRABBING_SAMPLE
+            timeSinceStateChange.reset()
+            clawISwap.set(false)
+        }
+        if (gamepad2.dpad_down) {
+            state = State.GRABBING_SPECIMEN
+            timeSinceStateChange.reset()
+            clawOSwap.set(false)
+        }
+        when (state) {
+            State.GRABBING_SAMPLE -> {
+                CV4B0O.position = 0.6
+                CV4B1O.position = 0.34
                 CV4B1I.position = 0.05
-                target= 200.0
+                clawOSwap.set(false)
+                target = 200.0
                 var deltaW = 0.0
                 if (size > 5000) {
                     if (angle in 90.0..180.0) {
-                        deltaW = (90 - (angle - 90)) / 90 / 20
+                        deltaW = (90 - (angle - 90)) / 90 / 20 / 2
                         wristPosition -= deltaW
                     } else if (angle in 0.0..90.0) {
-                        deltaW = angle / 90 / 20
+                        deltaW = angle / 90 / 20 / 2
                         wristPosition += deltaW
                     }
                 }
-                if (gamepad2.a) {
+                if (horz.currentPosition.toDouble() < 150) {
+                    wristPosition = 0.5
+                }
+                if (abs(gamepad2.left_stick_x) > 0.02) {
+                    wristPosition = (gamepad2.left_stick_x.toDouble() + 1) / 2
+                }
+                if (gamepad2.cross) {
                     timer.reset()
                     CV4B0I.position = 0.85
                 } else {
                     CV4B0I.position = 0.6
                 }
 
-                if (gamepad2.x) {
-                    state = State.GRABBED
+                if (gamepad2.square) {
+                    state = State.GRABBED_SAMPLE
+                    timeSinceStateChange.reset()
                 }
                 //wrist.position = (gamepad2.left_stick_x.toDouble() + 1.0) / 2
             }
-            State.GRABBED -> {
-                target = 0.0
-                CV4B1I.position = 0.85
+            State.GRABBED_SAMPLE -> {
+                if (timeSinceStateChange.seconds() > 0.2) {
+                    target = 0.0
+                }
+                if (gamepad2.start) {
+                    target = 100.0
+                }
                 CV4B0I.position = 0.0
-                if (gamepad2.b) {
+                CV4B1I.position = 0.8
+
+                wristPosition = 0.0
+                //wristPosition = 0.5
+                if (gamepad2.dpad_left) {
+                    clawOSwap.set(true)
+                    clawISwap.set(false)
+                    state = State.TRANSFERRED
+
+                    timeSinceStateChange.reset()
+                }
+                if (gamepad2.circle) {
+                    state = State.GRABBING_SAMPLE
+                }
+            }
+
+            State.TRANSFERRED -> {
+                if (timeSinceStateChange.seconds() > 0.2) {
+                    target = 50.0
+                    CV4B0O.position = 0.3
+                    CV4B1O.position = 0.8
+                }
+                if (gamepad1.left_bumper || gamepad2.dpad_up) {
+                    clawOSwap.set(false)
                     state = State.IDLE
                     timeSinceStateChange.reset()
                 }
-                if (gamepad2.y) {
-                    claw.position = 0.4
-                }
-                //wristPosition = 0.5
             }
 
             State.IDLE -> {
-                target = 0.0
+                CV4B0I.position = 0.0
+                CV4B1I.position = 0.8
+                CV4B1I.position = 0.8
+                wristO.position = 0.41
+                if (timeSinceStateChange.seconds() > 0.2) {
+                    CV4B0O.position = 0.6
+                    CV4B1O.position = 0.34
+                }
+
+                target = 50.0
             }
-            State.EXTENDING -> TODO()
+
+            State.GRABBING_SPECIMEN -> {
+                CV4B0O.position = 0.0
+                target = 0.0
+                if (gamepad2.left_bumper) {
+                    clawOSwap.set(true)
+                    state = State.GRABBED_SPECIMEN
+                    timeSinceStateChange.reset()
+                } else {
+                    wristO.position = 0.41
+                }
+                if (gamepad1.left_bumper || gamepad2.dpad_up) {
+                    CV4B1O.position = 1.0
+                } else {
+                    CV4B1O.position = 0.9
+                }
+            }
+            State.GRABBED_SPECIMEN -> {
+                if (timeSinceStateChange.seconds() > 1.5) {
+                    wristO.position = 0.98
+                }
+                if (gamepad2.left_bumper && timeSinceStateChange.seconds() > 2.0) {
+                    state = State.IDLE
+                    timeSinceStateChange.reset()
+                }
+            }
+
+            State.EXPANDED -> {
+                CV4B0O.position = 0.0
+                CV4B1O.position = 0.9
+
+                CV4B0I.position = 0.6
+                CV4B1I.position = 0.05
+
+                target = 200.0
+            }
         }
         telemetry.addData("State", state)
         telemetry.addData("Wrist Position", wristPosition)
@@ -141,7 +253,8 @@ class Scoring(
         vert0.power = gamepad2.right_stick_y.toDouble()
         vert1.power = gamepad2.right_stick_y.toDouble()
         telemetry.addData("Vertical Power", vert0.power)
-        telemetry.addData("FPS", visionPortal.fps)
+        telemetry.addData("Horz Power", horz.power)
+        //telemetry.addData("FPS", visionPortal.fps)
 
     }
 }
