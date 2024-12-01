@@ -32,7 +32,7 @@ class Scoring(
 
     private val wristI: CachingServo = CachingServo(hardwareMap.servo["wristI"])
     private val clawI: CachingServo = CachingServo(hardwareMap.servo["clawI"])
-    private val clawISwap = ServoSwap(clawI, 1.0, 0.8, true)
+    private val clawISwap = ServoSwap(clawI, 1.0, 0.7, true)
 
     private val CV4B0I = hardwareMap.servo["CV4B0I"]
     private val CV4B1I = hardwareMap.servo["CV4B1I"]
@@ -125,7 +125,7 @@ class Scoring(
         when (state) {
             State.GRABBING_SAMPLE -> {
                 CV4B0O.position = 0.6
-                CV4B1O.position = 0.34
+                CV4B1O.position = 0.36
                 CV4B1I.position = 0.05
                 clawOSwap.set(false)
                 target = 200.0
@@ -159,7 +159,7 @@ class Scoring(
                 //wrist.position = (gamepad2.left_stick_x.toDouble() + 1.0) / 2
             }
             State.GRABBED_SAMPLE -> {
-                if (timeSinceStateChange.seconds() > 0.2) {
+                if (timeSinceStateChange.seconds() > 0.5) {
                     target = 0.0
                 }
                 if (gamepad2.start) {
@@ -183,7 +183,7 @@ class Scoring(
             }
 
             State.TRANSFERRED -> {
-                if (timeSinceStateChange.seconds() > 0.2) {
+                if (timeSinceStateChange.seconds() > 0.1) {
                     target = 50.0
                     CV4B0O.position = 0.3
                     CV4B1O.position = 0.8
@@ -228,6 +228,8 @@ class Scoring(
                 if (timeSinceStateChange.seconds() > 1.5) {
                     wristO.position = 0.98
                 }
+                //CV4B0O.position = 0.196
+                //CV4B1O.position = 0.65
                 if (gamepad2.left_bumper && timeSinceStateChange.seconds() > 2.0) {
                     state = State.IDLE
                     timeSinceStateChange.reset()
