@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.rr.opmodes
 
 import com.acmerobotics.roadrunner.Pose2d
+import com.acmerobotics.roadrunner.SleepAction
 import com.acmerobotics.roadrunner.Vector2d
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
@@ -27,8 +28,17 @@ class AUTOv0 : LinearOpMode() {
         runBlocking(outtake.upMore())
         runBlocking(
             drive.actionBuilder(Pose2d(26.0, 0.0, Math.toRadians(180.0)))
-                .splineTo(Vector2d(20.0, 0.0), Math.toRadians(180.0))
+                .afterTime(0.2, outtake.down())
+                .splineToLinearHeading(Pose2d(12.0, -30.0, Math.toRadians(0.0)), Math.toRadians(180.0))
                 .build()
         )
+        runBlocking(SleepAction(2.0))
+        runBlocking(
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(Pose2d(6.0, -30.0, Math.toRadians(0.0)), Math.toRadians(180.0))
+                .build()
+        )
+        runBlocking(outtake.grab())
+        runBlocking(outtake.grab())
     }
 }

@@ -27,6 +27,16 @@ internal class Outtake(hardwareMap: HardwareMap) {
 
     private val PID = PIDController(0.01, 0.0, 0.0)
 
+    fun grab(): Action {
+        return object: Action {
+
+            override fun run(packet: TelemetryPacket): Boolean {
+                clawO.position = 0.68
+                return false
+            }
+        }
+    }
+
     fun up(): Action {
         return object: Action {
             private val target = 1600.0
@@ -62,6 +72,22 @@ internal class Outtake(hardwareMap: HardwareMap) {
                     clawO.position = 0.65
                 }
                 return vert0.currentPosition.toDouble() <= target-5
+            }
+        }
+    }
+    fun down(): Action {
+        return object: Action {
+            private val target = 0.0
+
+            override fun run(packet: TelemetryPacket): Boolean {
+                CV4B0O.position = 0.0
+                CV4B1O.position = 0.9
+                wristO.position = 0.41
+                clawO.position = 0.65
+                vert0.power = PID.calculate(vert0.currentPosition.toDouble(), target)
+                vert1.power = PID.calculate(vert0.currentPosition.toDouble(), target)
+                packet.put("position", vert0.currentPosition.toDouble())
+                return vert0.currentPosition.toDouble() <= target+50
             }
         }
     }
