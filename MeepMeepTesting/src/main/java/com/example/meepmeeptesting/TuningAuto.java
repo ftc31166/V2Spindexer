@@ -7,7 +7,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepTesting {
+public class TuningAuto {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -17,13 +17,7 @@ public class MeepMeepTesting {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(8.875, -61.71875, Math.toRadians(270)))
-                .strafeTo(new Vector2d(8.875, -37.71875)) // Go to Chamber
-                .strafeTo(new Vector2d(37.375, -37.71875)) // Move to the right
-                .strafeTo(new Vector2d(37.375, -14.71875)) // Move Forward
-                .strafeTo(new Vector2d(45.875, -14.71875)) // Move to Right
-                .strafeTo(new Vector2d(45.875, -53.46875)) // Move to Wall
-                .splineToLinearHeading(new Pose2d(47, -40, Math.toRadians(90)), Math.toRadians(90))
-
+                .splineTo(new Vector2d(8.875, -61.71875), Math.toRadians(270))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

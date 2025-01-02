@@ -18,7 +18,7 @@ public class Subsystems {
     public static class Arm {
         private DcMotorEx cap;
         private DcMotorEx cap2;
-        private PIDController capPID = new PIDController(0.008, 0, 0.001);
+        private PIDController capPID = new PIDController(0.02, 0, 0);
 
         public Arm(HardwareMap hardwareMap) {
             cap = hardwareMap.get(DcMotorEx.class, "cap");
@@ -30,7 +30,7 @@ public class Subsystems {
             cap2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             cap2.setDirection(DcMotorSimple.Direction.REVERSE);
             capPID.setIntegrationBounds(0, 0.01);
-            capPID.setTolerance(100, 100);
+            capPID.setTolerance(8);
         }
 
         public class ToChamber implements Action {
@@ -42,20 +42,22 @@ public class Subsystems {
                     initialized = true;
                 }
                 double pos = cap.getCurrentPosition();
-                cap.setPower(capPID.calculate(pos, 310));
-                cap2.setPower(capPID.calculate(pos, 310));
-                if (pos < 310.0) {
-                    return true;
-                } else {
+                double capPower = capPID.calculate(pos, 385);
+                cap.setPower(capPower);
+                cap2.setPower(capPower);
+                if (capPID.atSetPoint()) {
                     cap.setPower(0);
                     cap2.setPower(0);
                     return false;
+                } else {
+                    return true;
                 }
             }
         }
         public Action ToChamber() {
             return new ToChamber();
         }
+
         public class ToRest implements Action {
             private boolean initialized = false;
             @Override
@@ -65,14 +67,15 @@ public class Subsystems {
                     initialized = true;
                 }
                 double pos = cap.getCurrentPosition();
-                cap.setPower(capPID.calculate(pos, 30));
-                cap2.setPower(capPID.calculate(pos, 30));
+                double capPower = capPID.calculate(pos, 30);
+                cap.setPower(capPower);
+                cap2.setPower(capPower);
                 if (capPID.atSetPoint()) {
-                    return true;
-                } else {
                     cap.setPower(0);
                     cap2.setPower(0);
                     return false;
+                } else {
+                    return true;
                 }
             }
         }
@@ -82,7 +85,7 @@ public class Subsystems {
     }
     public static class LinearSlide {
         private DcMotorEx slide;
-        private PIDController slidePID = new PIDController(0.008F, 0, 0.001F);
+        private PIDController slidePID = new PIDController(0.008, 0, 0);
 
         public LinearSlide(HardwareMap hardwareMap) {
             slide = hardwareMap.get(DcMotorEx.class, "spindle");
@@ -103,18 +106,43 @@ public class Subsystems {
                     initialized = true;
                 }
                 double pos = slide.getCurrentPosition();
-                slide.setPower(slidePID.calculate(pos, 2400));
+                slide.setPower(slidePID.calculate(pos, 2300));
+                packet.put("LinearSlidePos", slide.getCurrentPosition());
                 if (slidePID.atSetPoint()) {
-                    return true;
-                } else {
                     slide.setPower(0);
+                    packet.put("RunningLinearSlide", false);
                     return false;
+                } else {
+                    packet.put("RunningLinearSlide", true);
+                    return true;
                 }
             }
         }
         public Action ToMaxOut() {
             return new ToMaxOut();
         }
+        public class ToChamber implements Action {
+            private boolean initialized = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    slidePID.reset();
+                    initialized = true;
+                }
+                double pos = slide.getCurrentPosition();
+                slide.setPower(slidePID.calculate(pos, 2000));
+                if (slidePID.atSetPoint()) {
+                    slide.setPower(0);
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        public Action ToChamber() {
+            return new ToChamber();
+        }
+
         public class ToMaxIn implements Action {
             private boolean initialized = false;
             @Override
@@ -126,10 +154,10 @@ public class Subsystems {
                 double pos = slide.getCurrentPosition();
                 slide.setPower(slidePID.calculate(pos, 0));
                 if (slidePID.atSetPoint()) {
-                    return true;
-                } else {
                     slide.setPower(0);
                     return false;
+                } else {
+                    return true;
                 }
             }
         }
@@ -141,11 +169,10 @@ public class Subsystems {
         private ServoImplEx leftServo;
         private ServoImplEx rightServo;
         public Claw(HardwareMap hardwareMap) {
-            // TODO: Make sure this is open all the way
-            leftServo.setPosition(1);  // This one
+            leftServo = hardwareMap.get(ServoImplEx.class, "LSLower");
             leftServo.setPwmEnable();
             leftServo.scaleRange(0, 1);
-            rightServo.setPosition(1);  // And this one
+            rightServo = hardwareMap.get(ServoImplEx.class, "LSTop");
             rightServo.setPwmEnable();
             rightServo.scaleRange(0, 1);
         }
@@ -160,14 +187,34 @@ public class Subsystems {
                     wait.start();
                     initialized = true;
                 }
-                leftServo.setPosition(0);
-                rightServo.setPosition(1);
+                leftServo.setPosition(0.07);
+                rightServo.setPosition(0.93);
                 return !wait.done();
             }
         }
         public Action Open() {
             return new Open();
         }
+
+        public class Rest implements Action {
+            private Timing.Timer wait = new Timing.Timer(700, TimeUnit.MILLISECONDS);
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    wait.start();
+                    initialized = true;
+                }
+                leftServo.setPosition(0.4);
+                rightServo.setPosition(0.6);
+                return !wait.done();
+            }
+        }
+        public Action Rest() {
+            return new Rest();
+        }
+
         public class Close implements Action {
             private Timing.Timer wait = new Timing.Timer(700, TimeUnit.MILLISECONDS);
             private boolean initialized = false;
@@ -178,8 +225,8 @@ public class Subsystems {
                     wait.start();
                     initialized = true;
                 }
-                leftServo.setPosition(1);
-                rightServo.setPosition(0);
+                leftServo.setPosition(0.73);
+                rightServo.setPosition(0.27);
                 return !wait.done();
             }
         }
