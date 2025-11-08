@@ -44,6 +44,14 @@ public class Autonish extends LinearOpMode{
         backRightMotor.setPower(0);
     }
 
+    public void turn(double power){
+        //In positive, turns left (I think???)
+        frontLeftMotor.setPower(power);
+        backLeftMotor.setPower(power);
+        frontRightMotor.setPower(-power);
+        backRightMotor.setPower(-power);
+    }
+
     public void Shoot(){
 
         robot.flywheel.setPower(Constants.SHOOTFAR);
