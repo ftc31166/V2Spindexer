@@ -75,18 +75,13 @@ public class MecanumTeleop extends LinearOpMode {
             }
             if (gamepad1.b){
                 robot.intake.setPower(0);
+                robot.feeder.setPower(0);
             }
             if (gamepad1.x){
                 hood.setPosition(hood.getPosition()+1);
             }
             if (gamepad1.y){
                 hood.setPosition(hood.getPosition()-1);
-            }
-            if (gamepad1.right_bumper){
-                robot.feeder.setPower(0.7);
-            }
-            if (gamepad1.left_bumper){
-                robot.feeder.setPower(0);
             }
             switch (shooter){
                 case ALL_OFF:
