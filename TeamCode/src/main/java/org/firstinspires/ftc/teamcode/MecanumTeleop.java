@@ -64,12 +64,14 @@ public class MecanumTeleop extends LinearOpMode {
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
             // The equivalent button is start on Xbox-style controllers.
-            robot.reverseFeeder.setPower(-robot.feeder.getPower());
-            if (gamepad1.start) {
+
+            if (gamepad1.start) {//resets heading
                 imu.resetYaw();
             }
             if (gamepad1.a){
                 robot.intake.setPower(Constants.INTAKEINPOWER);
+                robot.feeder.setPower(Constants.FEEDERIN);
+//                robot.reverseFeeder.setPower(robot.feeder.getPower());  un comment this if the ball is leaving the turret before flywheel on
             }
             if (gamepad1.b){
                 robot.intake.setPower(0);
@@ -80,6 +82,7 @@ public class MecanumTeleop extends LinearOpMode {
                     robot.flywheel.setPower(0);
                     robot.intake.setPower(0);
                     robot.feeder.setPower(0);
+                    robot.reverseFeeder.setPower(0);
                     if(gamepad1.left_trigger>0){
                         shooter = ShootingState.FLYWHEEL_ON;
                         timer.reset();
@@ -87,7 +90,7 @@ public class MecanumTeleop extends LinearOpMode {
                     break;
                 case FLYWHEEL_ON:
                     robot.flywheel.setPower(Constants.SHOOTCLOSE);
-                    if(timer.milliseconds() > 300){
+                    if(timer.milliseconds() > 300){//change this if flywheel isnt fast enough
                         shooter = ShootingState.FEEDER_ON;
 
                     }
@@ -95,6 +98,7 @@ public class MecanumTeleop extends LinearOpMode {
                 case FEEDER_ON:
                     robot.intake.setPower(Constants.INTAKEINPOWER);
                     robot.feeder.setPower(Constants.FEEDERIN);
+                    robot.reverseFeeder.setPower(-robot.feeder.getPower());
                     if(gamepad1.right_trigger>0){
                         shooter=ShootingState.ALL_OFF;
                     }
