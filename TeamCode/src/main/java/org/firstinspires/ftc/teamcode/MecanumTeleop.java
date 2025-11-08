@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
@@ -17,6 +19,7 @@ public class MecanumTeleop extends LinearOpMode {
         FEEDER_ON,
         ALL_OFF
     }
+    ShootingState shooter = ShootingState.ALL_OFF;
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -26,6 +29,7 @@ public class MecanumTeleop extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("bl");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("fr");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("br");
+        ElapsedTime timer = new ElapsedTime();
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -68,13 +72,32 @@ public class MecanumTeleop extends LinearOpMode {
             if (gamepad1.b){
                 robot.intake.setPower(0);
             }
-            if (gamepad1.right_trigger > 0){
-                robot.flywheel.setPower(Constants.SHOOTFAR);
-            }
-            if (gamepad1.left_trigger > 0){
-                robot.flywheel.setPower(0);
-            }
 
+            switch (shooter){
+                case ALL_OFF:
+                    robot.flywheel.setPower(0);
+                    robot.intake.setPower(0);
+                    robot.feeder.setPower(0);
+                    if(gamepad1.left_trigger>0){
+                        shooter = ShootingState.FLYWHEEL_ON;
+                        timer.reset();
+                    }
+                    break;
+                case FLYWHEEL_ON:
+                    robot.flywheel.setPower(Constants.SHOOTCLOSE);
+                    if(timer.milliseconds() > 300){
+                        shooter = ShootingState.FEEDER_ON;
+
+                    }
+                    break;
+                case FEEDER_ON:
+                    robot.intake.setPower(Constants.INTAKEINPOWER);
+                    robot.feeder.setPower(Constants.FEEDERIN);
+                    if(gamepad1.right_trigger>0){
+                        shooter=ShootingState.ALL_OFF;
+                    }
+                    break;
+            }
 
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
