@@ -29,6 +29,7 @@ public class MecanumTeleop extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("bl");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("fr");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("br");
+        Servo hood = hardwareMap.get(Servo.class, "hood");
         ElapsedTime timer = new ElapsedTime();
 
         // Reverse the right side motors. This may be wrong for your setup.
