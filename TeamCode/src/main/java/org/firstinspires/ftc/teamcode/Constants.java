@@ -17,7 +17,7 @@ public class Constants {
     public static final  double TURRETSTRIAGHT  = 0.5;
     public static final  double HOODCLOSE  = -0;
     public static final  double HOODFAR  = -0;
-    public static final  double FEEDERIN  = -1;
+    public static final  double FEEDERIN  = -0.7;
 
 
 
