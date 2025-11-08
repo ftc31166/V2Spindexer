@@ -61,11 +61,17 @@ public class RobotTeleop extends LinearOpMode {
             if (gamepad1.right_bumper){
                 robot.flywheel.setPower(Constants.SHOOTCLOSE);
             }
+            else{
+                robot.flywheel.setPower(0);
+            }
             if (gamepad1.left_bumper){
                 robot.flywheel.setPower(0);
             }
-            if (gamepad1.dpad_down){
+            if (gamepad1.right_bumper){
                 robot.reverseFeeder.setPower(-Constants.FEEDERIN);
+            }
+            else{
+                robot.reverseFeeder.setPower(0);
             }
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
