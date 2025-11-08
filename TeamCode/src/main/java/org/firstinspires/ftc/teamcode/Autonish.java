@@ -46,9 +46,9 @@ public class Autonish extends LinearOpMode{
 
     public void Shoot(){
 
-        robot.flywheel.setPower(-0.7);
+        robot.flywheel.setPower(Constants.SHOOTFAR);
         sleep(1000);
-        robot.intake.setPower(1);
+        robot.intake.setPower(Constants.INTAKEINPOWER);
         robot.feeder.setPower(1);
         sleep(3000);
         robot.intake.setPower(0);
