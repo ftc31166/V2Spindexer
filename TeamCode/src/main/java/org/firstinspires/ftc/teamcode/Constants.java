@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Constants {
-    public static final  double INTAKEINPOWER  = -0.7;
+    public static final  double INTAKEINPOWER  = -1;
     public static final  double INTAKEOUTPOWER  = 0.7;
     public static final  double LIFTERUP  = 1;
     public static final  double LIFTERDOWN  = 0.5;
@@ -17,7 +17,7 @@ public class Constants {
     public static final  double TURRETSTRIAGHT  = 0.5;
     public static final  double HOODCLOSE  = -0;
     public static final  double HOODFAR  = -0;
-    public static final  double FEEDERIN  = -0.7;
+    public static final  double FEEDERIN  = 0.7;
 
 
 
