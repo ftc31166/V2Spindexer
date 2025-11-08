@@ -30,16 +30,17 @@ public class MecanumTeleop extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("fr");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("br");
         Servo hood = hardwareMap.get(Servo.class, "hood");
+
         ElapsedTime timer = new ElapsedTime();
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -82,6 +83,15 @@ public class MecanumTeleop extends LinearOpMode {
             }
             if (gamepad1.y){
                 hood.setPosition(hood.getPosition()-1);
+            }
+            if (gamepad1.right_bumper){
+                robot.flywheel.setPower(1);
+            }
+            if (gamepad1.left_bumper){
+                robot.flywheel.setPower(0);
+            }
+            if (gamepad1.dpad_down){
+                robot.reverseFeeder.setPower(-Constants.FEEDERIN);
             }
             switch (shooter){
                 case ALL_OFF:
