@@ -29,7 +29,6 @@ public class MecanumTeleop extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("bl");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("fr");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("br");
-        Servo hood = hardwareMap.get(Servo.class, "hood");
 
         ElapsedTime timer = new ElapsedTime();
 
@@ -71,34 +70,29 @@ public class MecanumTeleop extends LinearOpMode {
             }
             if (gamepad1.a){
                 robot.intake.setPower(Constants.INTAKEINPOWER);
-                robot.feeder.setPower(Constants.FEEDERIN);
-//                robot.reverseFeeder.setPower(robot.feeder.getPower());  un comment this if the ball is leaving the turret before flywheel on
+//                robot.feeder.setPower(Constants.FEEDERIN);
             }
             if (gamepad1.b){
                 robot.intake.setPower(0);
-                robot.feeder.setPower(0);
+//                robot.feeder.setPower(0);
             }
-            if (gamepad1.x){
-                hood.setPosition(hood.getPosition()+1);
-            }
-            if (gamepad1.y){
-                hood.setPosition(hood.getPosition()-1);
-            }
+
             if (gamepad1.right_bumper){
-                robot.flywheel.setPower(1);
+                robot.flywheel.setPower(-1);
             }
             if (gamepad1.left_bumper){
                 robot.flywheel.setPower(0);
             }
+//<<<<<<< HEAD
             if (gamepad1.dpad_down){
                 robot.reverseFeeder.setPower(-1);
             }
+//=======
+
+//>>>>>>> b65624b7a31969177a629fe9104207f30fc3689e
             switch (shooter){
                 case ALL_OFF:
-                    robot.flywheel.setPower(0);
-                    robot.intake.setPower(0);
-                    robot.feeder.setPower(0);
-                    robot.reverseFeeder.setPower(0);
+
                     if(gamepad1.left_trigger>0){
                         shooter = ShootingState.FLYWHEEL_ON;
                         timer.reset();
@@ -106,16 +100,18 @@ public class MecanumTeleop extends LinearOpMode {
                     break;
                 case FLYWHEEL_ON:
                     robot.flywheel.setPower(Constants.SHOOTCLOSE);
-                    if(timer.milliseconds() > 300){//change this if flywheel isnt fast enough
+                    if(timer.milliseconds() > 1000){//change this if flywheel isnt fast enough
                         shooter = ShootingState.FEEDER_ON;
 
                     }
                     break;
                 case FEEDER_ON:
                     robot.intake.setPower(Constants.INTAKEINPOWER);
-                    robot.feeder.setPower(Constants.FEEDERIN);
-                    robot.reverseFeeder.setPower(-robot.feeder.getPower());
+//                    robot.feeder.setPower(Constants.FEEDEROUT);
                     if(gamepad1.right_trigger>0){
+                        robot.flywheel.setPower(0);
+                        robot.intake.setPower(0);
+//                        robot.feeder.setPower(0);
                         shooter=ShootingState.ALL_OFF;
                     }
                     break;

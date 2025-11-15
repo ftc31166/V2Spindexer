@@ -10,6 +10,5 @@ public class Robot {
         flywheel = hardwareMap.get(DcMotor.class, "fly");
         intake = hardwareMap.get(DcMotor.class, "in");
         feeder = hardwareMap.get(DcMotor.class, "fee");
-        reverseFeeder = hardwareMap.get(DcMotor.class, "rfed");
     }
 }
