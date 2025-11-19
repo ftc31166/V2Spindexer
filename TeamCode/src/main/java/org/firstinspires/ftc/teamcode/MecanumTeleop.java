@@ -15,11 +15,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @TeleOp
 public class MecanumTeleop extends LinearOpMode {
     public enum ShootingState{
-        FLYWHEEL_ON,
-        FEEDER_ON,
-        ALL_OFF
+        JUSTDRIVING,
+        INTAKING,
+        EJECTING,
+        FLYWHEELING,
+        FEEDING,
+        OPENGATE
     }
-    ShootingState shooter = ShootingState.ALL_OFF;
+    ShootingState shooter = ShootingState.JUSTDRIVING;
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -68,51 +71,51 @@ public class MecanumTeleop extends LinearOpMode {
             if (gamepad1.start) {//resets heading
                 imu.resetYaw();
             }
-            if (gamepad1.a){
-                robot.intake.setPower(Constants.INTAKEINPOWER);
-//                robot.feeder.setPower(Constants.FEEDERIN);
-            }
-            if (gamepad1.b){
-                robot.intake.setPower(0);
-//                robot.feeder.setPower(0);
-            }
 
-            if (gamepad1.right_bumper){
-                robot.flywheel.setPower(-1);
-            }
-            if (gamepad1.left_bumper){
-                robot.flywheel.setPower(0);
-            }
-//<<<<<<< HEAD
-            if (gamepad1.dpad_down){
-                robot.reverseFeeder.setPower(-1);
-            }
-//=======
 
-//>>>>>>> b65624b7a31969177a629fe9104207f30fc3689e
             switch (shooter){
-                case ALL_OFF:
+                case JUSTDRIVING:
+                    robot.flywheel.setPower(0);
+                    robot.intake.setPower(0);
+                    robot.gate.setPosition(Constants.GATECLOSE);
+                    if(gamepad1.a){
+                        shooter = ShootingState.INTAKING;
+                    }
 
-                    if(gamepad1.left_trigger>0){
-                        shooter = ShootingState.FLYWHEEL_ON;
+                    break;
+                case INTAKING:
+                    robot.intake.setPower(Constants.INTAKEINPOWER);
+                    robot.gate.setPosition(Constants.GATECLOSE);
+                    if(gamepad1.x){
+                        shooter = ShootingState.FLYWHEELING;
+                        timer.reset();
+                    }
+                    if(gamepad1.b){
+                        shooter = ShootingState.EJECTING;
+                    }
+                    break;
+                case EJECTING:
+                    robot.intake.setPower(-Constants.INTAKEINPOWER);
+                    if(gamepad1.b){
+                        shooter = ShootingState.JUSTDRIVING;
+                    }
+                    break;
+                case FLYWHEELING:
+                    robot.intake.setPower(0);
+                    robot.flywheel.setPower(Constants.SHOOTCLOSE);
+                    if(gamepad1.a && timer.milliseconds()>1000){
+                        robot.gate.setPosition(Constants.GATEOPEN);
+                        shooter=ShootingState.FEEDING;
                         timer.reset();
                     }
                     break;
-                case FLYWHEEL_ON:
-                    robot.flywheel.setPower(Constants.SHOOTCLOSE);
-                    if(timer.milliseconds() > 1000){//change this if flywheel isnt fast enough
-                        shooter = ShootingState.FEEDER_ON;
-
+                case FEEDING:
+                    if(timer.milliseconds()>300){
+                        robot.intake.setPower(Constants.INTAKEINPOWER);
                     }
-                    break;
-                case FEEDER_ON:
-                    robot.intake.setPower(Constants.INTAKEINPOWER);
-//                    robot.feeder.setPower(Constants.FEEDEROUT);
-                    if(gamepad1.right_trigger>0){
-                        robot.flywheel.setPower(0);
-                        robot.intake.setPower(0);
-//                        robot.feeder.setPower(0);
-                        shooter=ShootingState.ALL_OFF;
+                    if(gamepad1.x ){
+
+                        shooter=ShootingState.JUSTDRIVING;
                     }
                     break;
             }
