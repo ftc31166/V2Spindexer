@@ -52,51 +52,31 @@ public class RobotTeleop extends LinearOpMode {
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
 
-            switch (shooter){
-                case JUSTDRIVING:
-                    robot.flywheel.setPower(0);
-                    robot.intake.setPower(0);
-                    robot.gate.setPosition(Constants.GATECLOSE);
-                    if(gamepad1.a){
-                        shooter = MecanumTeleop.ShootingState.INTAKING;
-                    }
+            if(gamepad1.a){
 
-                    break;
-                case INTAKING:
-                    robot.intake.setPower(Constants.INTAKEINPOWER);
-                    robot.gate.setPosition(Constants.GATECLOSE);
-                    if(gamepad1.x){
-                        shooter = MecanumTeleop.ShootingState.FLYWHEELING;
-                        timer.reset();
-                    }
-                    if(gamepad1.b){
-                        shooter = MecanumTeleop.ShootingState.EJECTING;
-                    }
-                    break;
-                case EJECTING:
-                    robot.intake.setPower(-Constants.INTAKEINPOWER);
-                    if(gamepad1.b){
-                        shooter = MecanumTeleop.ShootingState.JUSTDRIVING;
-                    }
-                    break;
-                case FLYWHEELING:
-                    robot.intake.setPower(0);
-                    robot.flywheel.setPower(Constants.SHOOTCLOSE);
-                    if(gamepad1.a && timer.milliseconds()>1000){
-                        robot.gate.setPosition(Constants.GATEOPEN);
-                        shooter= MecanumTeleop.ShootingState.FEEDING;
-                        timer.reset();
-                    }
-                    break;
-                case FEEDING:
-                    if(timer.milliseconds()>300){
-                        robot.intake.setPower(Constants.INTAKEINPOWER);
-                    }
-                    if(gamepad1.x ){
+                robot.intake.setPower(Constants.INTAKEINPOWER);
+                robot.gate.setPosition(Constants.GATECLOSE);
 
-                        shooter= MecanumTeleop.ShootingState.JUSTDRIVING;
-                    }
-                    break;
+            }
+            if (gamepad1.x){
+                robot.intake.setPower(-Constants.INTAKEINPOWER);
+            }
+            if (gamepad1.b){
+                robot.intake.setPower(0);
+            }
+            if(gamepad1.right_trigger>0){
+                robot.gate.setPosition(Constants.GATEOPEN);
+                robot.flywheel.setPower(Constants.SHOOTFAR);
+                robot.flywheel2.setPower(Constants.SHOOTFAR);
+            }
+            if(gamepad1.left_trigger>0){
+                robot.gate.setPosition(Constants.GATECLOSE);
+                robot.flywheel.setPower(0);
+                robot.flywheel2.setPower(0);
+            }
+            if(gamepad1.right_bumper) {
+                robot.intake.setPower(Constants.INTAKEINPOWER);
+
             }
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
