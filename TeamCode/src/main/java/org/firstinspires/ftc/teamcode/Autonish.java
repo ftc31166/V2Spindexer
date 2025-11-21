@@ -53,7 +53,7 @@
 //    }
 //
 //    public void Shoot(){
-//        robot.flywheel.setPower(Constants.SHOOTFAR);
+//        robot.flywheel.setPower(Constants.SHOOTCLOSE);
 //        sleep(1000);
 //        robot.intake.setPower(Constants.INTAKEINPOWER);
 //        robot.feeder.setPower(Constants.FEEDERIN);
