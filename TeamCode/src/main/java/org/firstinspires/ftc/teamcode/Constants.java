@@ -13,7 +13,7 @@ public class Constants {
     public static final  double BALL2  = -0;
     public static final  double BALL3  = -0;
     public static final  double SHOOTCLOSE  = -0.7;
-    public static final  double SHOOTFAR  = -0.9;
+    public static final  double SHOOTFAR  = -1;
     public static final  double TURRETSTRIAGHT  = 0.5;
     public static final  double HOODCLOSE  = -0;
     public static final  double HOODFAR  = -0;
