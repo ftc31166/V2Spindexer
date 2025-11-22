@@ -42,13 +42,13 @@ public class RedClose extends LinearOpMode {
     
         Action scorePreload = drive.actionBuilder(initPose)
                 .stopAndAdd(robot.flywheelOn())
-                .stopAndAdd(robot.intakeOn())
+                .stopAndAdd(robot.gateOpen())
                 .setTangent(Math.toRadians(-45))
                 .splineToConstantHeading(new Vector2d(-13, 14), Math.toRadians(-45))
-                .stopAndAdd(robot.intakeOff())
-                .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(2))
+                .strafeTo(new Vector2d(-15, 16))
+                .strafeTo(new Vector2d(-13, 14))
                 .build();
 
         Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), initPose.heading))
@@ -71,6 +71,8 @@ public class RedClose extends LinearOpMode {
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(2))
+                .strafeTo(new Vector2d(-15, 16))
+                .strafeTo(new Vector2d(-13, 14))
                 .build();
 
         Action intakeSecondSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), Math.toRadians(135)))
@@ -92,9 +94,11 @@ public class RedClose extends LinearOpMode {
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(2))
+                .strafeTo(new Vector2d(-15, 16))
+                .strafeTo(new Vector2d(-13, 14))
                 .build();
 
-        Action park = drive.actionBuilder(new Pose2d(-8, 12, Math.toRadians(135)))
+        Action park = drive.actionBuilder(new Pose2d(-13, 14, Math.toRadians(135)))
                 .splineToLinearHeading(new Pose2d(-15, 20,Math.toRadians(90)),Math.toRadians(90))
                 .build();
 
