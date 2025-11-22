@@ -41,27 +41,30 @@ public class RedClose extends LinearOpMode {
 
     
         Action scorePreload = drive.actionBuilder(initPose)
-                .stopAndAdd(robot.gateClose())
                 .stopAndAdd(robot.flywheelOn())
                 .stopAndAdd(robot.intakeOn())
                 .setTangent(Math.toRadians(-45))
-                .splineToConstantHeading(new Vector2d(-10, 10), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(-10, 10), Math.toRadians(-45),new TranslationalVelConstraint(10))
                 .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(new SleepAction(1))
                 .stopAndAdd(robot.intakeOn())
-                .stopAndAdd(new SleepAction(3))
+                .stopAndAdd(new SleepAction(2))
                 .build();
 
         Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-10, 10), initPose.heading))
                 .stopAndAdd(robot.gateClose())
-                .splineToLinearHeading(new Pose2d(-10, 10, Math.toRadians(90)), Math.toRadians(90))
+                .stopAndAdd(robot.ballOpen())
+
+                .splineToLinearHeading(new Pose2d(-14, 10, Math.toRadians(90)), Math.toRadians(90))
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-15, 58), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-14, 58), Math.toRadians(90),new TranslationalVelConstraint(100))
                 .stopAndAdd(new SleepAction(1))
+                .stopAndAdd(robot.ballClose())
+
                 .build();
 
-        Action goToScoreFirstSet = drive.actionBuilder(new Pose2d(-15, 58, Math.toRadians(90)))
+        Action goToScoreFirstSet = drive.actionBuilder(new Pose2d(-14, 58, Math.toRadians(90)))
                 .setTangent(Math.toRadians(-90))
                 .splineToSplineHeading(new Pose2d(-15, 20, Math.toRadians(135)), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(-10, 10, Math.toRadians(135)), Math.toRadians(135))
@@ -74,11 +77,14 @@ public class RedClose extends LinearOpMode {
 
         Action intakeSecondSet = drive.actionBuilder(new Pose2d(new Vector2d(-10, 10), Math.toRadians(135)))
                 .stopAndAdd(robot.gateClose())
+                .stopAndAdd(robot.ballOpen())
                 .setTangent(Math.toRadians(-45))
                 .splineToLinearHeading(new Pose2d(12, 15, Math.toRadians(90)), Math.toRadians(90))
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(10, 70), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(10, 70), Math.toRadians(90),new TranslationalVelConstraint(100))
                 .stopAndAdd( new SleepAction(1))
+                .stopAndAdd(robot.ballClose())
+
                 .build();
 
         Action goToScoreSecondSet = drive.actionBuilder(new Pose2d(10, 70, Math.toRadians(90)))
@@ -92,7 +98,8 @@ public class RedClose extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(-15, 20,Math.toRadians(90)),Math.toRadians(90))
                 .build();
 
-
+        Actions.runBlocking(robot.gateClose());
+        Actions.runBlocking(robot.ballClose());
         waitForStart();
 
         Actions.runBlocking(

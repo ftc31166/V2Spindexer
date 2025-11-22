@@ -17,8 +17,10 @@ public class Constants {
     public static final  double TURRETSTRIAGHT  = 0.5;
     public static final  double HOODCLOSE  = -0;
     public static final  double HOODFAR  = -0;
-    public static final  double GATEOPEN  = 0;
+    public static final  double GATEOPEN  = 0.0;
     public static final  double GATECLOSE  = 0.3;
+    public static final  double BALLHOLDERUP  = 0.2;
+    public static final  double BALLHOLDERDOWN  = 0;
 
 
 

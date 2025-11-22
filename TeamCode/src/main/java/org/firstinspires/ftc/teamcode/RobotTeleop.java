@@ -46,7 +46,7 @@ public class RobotTeleop extends LinearOpMode {
 
 
             if(gamepad1.a){
-
+                robot.ballHolder.setPosition(Constants.BALLHOLDERUP);
                 robot.intake.setPower(Constants.INTAKEINPOWER);
                 robot.gate.setPosition(Constants.GATECLOSE);
 
@@ -56,6 +56,7 @@ public class RobotTeleop extends LinearOpMode {
             }
             if (gamepad1.b){
                 robot.intake.setPower(0);
+                robot.ballHolder.setPosition(Constants.BALLHOLDERDOWN);
             }
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);

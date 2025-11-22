@@ -49,6 +49,24 @@ public class AutonFuncs  {
             }
         };
     }
+    public Action ballOpen(){
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.ballHolder.setPosition(Constants.BALLHOLDERUP);
+                return false;
+            }
+        };
+    }
+    public Action ballClose(){
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.ballHolder.setPosition(Constants.BALLHOLDERDOWN);
+                return false;
+            }
+        };
+    }
     public Action flywheelOn(){
         return new Action() {
             @Override
