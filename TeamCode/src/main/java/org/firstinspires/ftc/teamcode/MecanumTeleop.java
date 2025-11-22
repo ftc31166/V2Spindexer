@@ -14,15 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp
 public class MecanumTeleop extends LinearOpMode {
-    public enum ShootingState{
-        JUSTDRIVING,
-        INTAKING,
-        EJECTING,
-        FLYWHEELING,
-        FEEDING,
-        OPENGATE
-    }
-    ShootingState shooter = ShootingState.JUSTDRIVING;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
