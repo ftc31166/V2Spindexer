@@ -66,10 +66,8 @@ public class MecanumTeleop extends LinearOpMode {
 
 
             if(gamepad1.a){
-
-                    robot.intake.setPower(Constants.INTAKEINPOWER);
-                    robot.gate.setPosition(Constants.GATECLOSE);
-
+                robot.intake.setPower(Constants.INTAKEINPOWER);
+                robot.gate.setPosition(Constants.GATECLOSE);
             }
             if (gamepad1.x){
                 robot.intake.setPower(-Constants.INTAKEINPOWER);
