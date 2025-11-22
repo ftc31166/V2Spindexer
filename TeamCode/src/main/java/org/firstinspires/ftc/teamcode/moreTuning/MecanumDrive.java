@@ -64,13 +64,13 @@ public class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 1; // SparkFun OTOS Note: you can probably leave this at 1
-        public double lateralInPerTick = 0.7523732311430573; //0.736834497757;// OTOS: 0.872882;
-        public double trackWidthTicks = 12.698491025795713; //12.791; // otos 12.66;
+        public double lateralInPerTick = 0.7696258256415379; //0.736834497757;// OTOS: 0.872882;
+        public double trackWidthTicks = 13.0245421492571113; //12.791; // otos 12.66;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.046185469411772; //0.7635681070147831; // OTOS: 0.563756515907424;
-        public double kV = 0.17558242975902566; //0.1946438443334511; // OTOS:0.19141851548064043;
-        public double kA = 0.01;
+        public double kS = 1.1;
+        public double kV = 0.17;
+        public double kA = 0.05;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 60; // 50
@@ -217,10 +217,10 @@ public class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, "left_front");
-        leftBack = hardwareMap.get(DcMotorEx.class, "left_back");
-        rightBack = hardwareMap.get(DcMotorEx.class, "right_back");
-        rightFront = hardwareMap.get(DcMotorEx.class, "right_front");
+        leftFront = hardwareMap.get(DcMotorEx.class, "fl");
+        leftBack = hardwareMap.get(DcMotorEx.class, "bl");
+        rightBack = hardwareMap.get(DcMotorEx.class, "br");
+        rightFront = hardwareMap.get(DcMotorEx.class, "fr");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

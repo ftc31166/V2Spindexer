@@ -5,9 +5,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.moreTuning.MecanumDrive;
-import org.firstinspires.ftc.teamcode.moreTuning.OctoQuadDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
-import org.firstinspires.ftc.teamcode.moreTuning.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.TankDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.moreTuning.TwoDeadWheelLocalizer;
@@ -17,20 +15,9 @@ public final class ManualFeedbackTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        if (TuningOpModes.DRIVE_CLASS.equals(OctoQuadDrive.class)) {
-            OctoQuadDrive drive = new OctoQuadDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-            waitForStart();
 
-            while (opModeIsActive()) {
-                Actions.runBlocking(
-                        drive.actionBuilder(new Pose2d(0, 0, 0))
-                                .lineToX(DISTANCE)
-                                .lineToX(0)
-                                .build());
-            }
-
-        } else if (TuningOpModes.DRIVE_CLASS.equals(PinpointDrive.class)) {
+        if (TuningOpModes.DRIVE_CLASS.equals(PinpointDrive.class)) {
             PinpointDrive drive = new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             waitForStart();
@@ -42,19 +29,8 @@ public final class ManualFeedbackTuner extends LinearOpMode {
                                 .lineToX(0)
                                 .build());
             }
-        } else if (TuningOpModes.DRIVE_CLASS.equals(SparkFunOTOSDrive.class)) {
-            SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
-
-            waitForStart();
-
-            while (opModeIsActive()) {
-                Actions.runBlocking(
-                        drive.actionBuilder(new Pose2d(0, 0, 0))
-                                .lineToX(DISTANCE)
-                                .lineToX(0)
-                                .build());
-            }
-        } else if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
+        }
+         else if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             if (drive.localizer instanceof TwoDeadWheelLocalizer) {

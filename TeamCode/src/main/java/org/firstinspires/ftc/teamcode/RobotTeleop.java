@@ -10,15 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 public class RobotTeleop extends LinearOpMode {
-    public enum ShootingState{
-        JUSTDRIVING,
-        INTAKING,
-        EJECTING,
-        FLYWHEELING,
-        FEEDING,
-        OPENGATE
-    }
-    MecanumTeleop.ShootingState shooter = MecanumTeleop.ShootingState.JUSTDRIVING;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -28,7 +20,7 @@ public class RobotTeleop extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("fr");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("br");
         Robot robot = new Robot(hardwareMap);
-        Servo hood = hardwareMap.get(Servo.class, "hood");
+
 
         ElapsedTime timer = new ElapsedTime();
 
@@ -51,6 +43,7 @@ public class RobotTeleop extends LinearOpMode {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
+            
 
             if(gamepad1.a){
 
@@ -74,7 +67,7 @@ public class RobotTeleop extends LinearOpMode {
                 robot.flywheel.setPower(0);
                 robot.flywheel2.setPower(0);
             }
-            if(gamepad1.right_bumper) {
+            if(gamepad1.right_bumper){
                 robot.intake.setPower(Constants.INTAKEINPOWER);
 
             }
