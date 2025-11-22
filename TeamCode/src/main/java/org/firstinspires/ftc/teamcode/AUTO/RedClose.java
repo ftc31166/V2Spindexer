@@ -60,6 +60,7 @@ public class RedClose extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(-14, 65), Math.toRadians(90))
                 .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.ballClose())
+                .stopAndAdd(robot.intakeOff())
 
                 .build();
 
@@ -67,7 +68,6 @@ public class RedClose extends LinearOpMode {
                 .setTangent(Math.toRadians(-90))
                 .splineToSplineHeading(new Pose2d(-15, 20, Math.toRadians(135)), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(-13, 14, Math.toRadians(135)), Math.toRadians(135))
-                .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(2))
@@ -84,13 +84,13 @@ public class RedClose extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(10, 78), Math.toRadians(90))
                 .stopAndAdd( new SleepAction(1))
                 .stopAndAdd(robot.ballClose())
+                .stopAndAdd(robot.intakeOff())
 
                 .build();
 
         Action goToScoreSecondSet = drive.actionBuilder(new Pose2d(10, 78, Math.toRadians(90)))
                 .setTangent(Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(-13, 14, Math.toRadians(135)), Math.toRadians(45)).stopAndAdd(robot.intakeOff())
-                .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(2))

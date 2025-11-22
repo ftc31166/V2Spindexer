@@ -31,6 +31,15 @@ public class AutonFuncs  {
             }
         };
     }
+    public Action intakeRev(){
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.intake.setPower(Constants.INTAKEOUTPOWER);
+                return false;
+            }
+        };
+    }
     public Action gateClose(){
         return new Action() {
             @Override
