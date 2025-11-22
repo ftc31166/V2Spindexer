@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "SampleAuton", group = "Autonomous")
+@Autonomous(name = "SampleAuto", group = "Autonomous")
 public class SampleAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
