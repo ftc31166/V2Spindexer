@@ -35,10 +35,7 @@ public class RedClose extends LinearOpMode {
         curPos = drive.pose;
         curDistance = 0;
 
-        // -----------------------------------------------------
-        // PATHING ONLY — All robot actions removed
-        // -----------------------------------------------------
-
+    
         Action scorePreload = drive.actionBuilder(initPose)
                 .setTangent(Math.toRadians(-45))
                 .splineToConstantHeading(new Vector2d(-20, 20), Math.toRadians(-45))
