@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.moreTuning.MecanumDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
 @Config
-@Autonomous(name = "BLueClose", group = "Autonomous")
+@Autonomous(name = "BlueClose", group = "Autonomous")
 public class BlueClose extends LinearOpMode {
 
     private Pose2d curPos;
@@ -32,7 +32,7 @@ public class BlueClose extends LinearOpMode {
     public void runOpMode() {
         AutonFuncs robot = new AutonFuncs(hardwareMap);
 
-        // Y flipped, angle sign flipped
+        // *** X-axis inversion = flip Y signs AND angle signs ***
         Pose2d initPose = new Pose2d(-52, -52, -Math.toRadians(135));
         PinpointDrive drive = new PinpointDrive(hardwareMap, initPose);
 
@@ -43,11 +43,8 @@ public class BlueClose extends LinearOpMode {
                 .stopAndAdd(robot.flywheelOn())
                 .stopAndAdd(robot.gateOpen())
 
-                // tangent flipped
-                .setTangent(-Math.toRadians(-45))
-
-                // Y flipped, angle flipped
-                .splineToConstantHeading(new Vector2d(-14, -15), -Math.toRadians(-45),new TranslationalVelConstraint(100))
+                .setTangent(Math.toRadians(45))
+                .splineToConstantHeading(new Vector2d(-14, -15), -Math.toRadians(-45), new TranslationalVelConstraint(100))
 
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(1))
@@ -55,16 +52,15 @@ public class BlueClose extends LinearOpMode {
                 .stopAndAdd(new SleepAction(0.2))
                 .stopAndAdd(robot.intakeOn())
 
-                .strafeTo(new Vector2d(-15, -16),new TranslationalVelConstraint(100))
-                .strafeTo(new Vector2d(-13, -14),new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-15, -16), new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-13, -14), new TranslationalVelConstraint(100))
                 .build();
 
-        Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-14, -15), -Math.toRadians(135)))
+        Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, -14), -Math.toRadians(135)))
                 .stopAndAdd(robot.gateClose())
                 .stopAndAdd(robot.ballOpen())
-
-                .splineToLinearHeading(new Pose2d(-14, -10, -Math.toRadians(90)), -Math.toRadians(90),new TranslationalVelConstraint(100))
-                .setTangent(-Math.toRadians(90))
+                .setTangent(-45)
+                .splineToLinearHeading(new Pose2d(-14, -12,- Math.toRadians(90)), -Math.toRadians(90), new TranslationalVelConstraint(100))
 
                 .splineToConstantHeading(new Vector2d(-14, -56), -Math.toRadians(90))
 
@@ -75,11 +71,9 @@ public class BlueClose extends LinearOpMode {
                 .build();
 
         Action goToScoreFirstSet = drive.actionBuilder(new Pose2d(-14, -56, -Math.toRadians(90)))
-                .setTangent(-Math.toRadians(-90))
 
-                .splineToSplineHeading(new Pose2d(-15, -20, -Math.toRadians(135)), -Math.toRadians(-90),new TranslationalVelConstraint(100))
-
-                .splineToLinearHeading(new Pose2d(-13, -14, -Math.toRadians(135)), -Math.toRadians(135),new TranslationalVelConstraint(100))
+                .splineToSplineHeading(new Pose2d(-15, -20, -Math.toRadians(135)), -Math.toRadians(-90), new TranslationalVelConstraint(100))
+                .splineToLinearHeading(new Pose2d(-13, -14, -Math.toRadians(135)), -Math.toRadians(135), new TranslationalVelConstraint(100))
 
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
@@ -88,32 +82,29 @@ public class BlueClose extends LinearOpMode {
                 .stopAndAdd(new SleepAction(0.2))
                 .stopAndAdd(robot.intakeOn())
 
-                .strafeTo(new Vector2d(-15, -16),new TranslationalVelConstraint(100))
-                .strafeTo(new Vector2d(-13, -14),new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-15, -16), new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-14, -14), new TranslationalVelConstraint(100))
                 .build();
 
-        Action intakeSecondSet = drive.actionBuilder(new Pose2d(new Vector2d(-14, -15), -Math.toRadians(135)))
+        Action intakeSecondSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, -14), Math.toRadians(135)))
                 .stopAndAdd(robot.gateClose())
                 .stopAndAdd(robot.ballOpen())
 
-                .setTangent(-Math.toRadians(-45))
-
-                .splineToLinearHeading(new Pose2d(12, -10, -Math.toRadians(90)), -Math.toRadians(90))
+                .setTangent(Math.toRadians(-45))
+                .strafeToLinearHeading(new Vector2d(12,-12),Math.toRadians(-90))
                 .setTangent(-Math.toRadians(90))
-
-                .splineToConstantHeading(new Vector2d(10, -63), -Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(12, -63),-Math.toRadians(90))
 
                 .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.ballClose())
                 .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(new SleepAction(0.5))
-
                 .build();
 
-        Action goToScoreSecondSet = drive.actionBuilder(new Pose2d(10, -63, -Math.toRadians(90)))
-                .setTangent(-Math.toRadians(-90))
+        Action goToScoreSecondSet = drive.actionBuilder(new Pose2d(12, -63, -Math.toRadians(90)))
+                .setTangent(Math.toRadians(90))
 
-                .splineToLinearHeading(new Pose2d(-14, -15, -Math.toRadians(135)), -Math.toRadians(45),new TranslationalVelConstraint(100))
+                .splineToLinearHeading(new Pose2d(-14, -15, Math.toRadians(-135)), Math.toRadians(-45), new TranslationalVelConstraint(100))
                 .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
@@ -122,12 +113,12 @@ public class BlueClose extends LinearOpMode {
                 .stopAndAdd(new SleepAction(0.2))
                 .stopAndAdd(robot.intakeOn())
 
-                .strafeTo(new Vector2d(-15, -16),new TranslationalVelConstraint(100))
-                .strafeTo(new Vector2d(-13, -14),new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-15, -16), new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-13, -14), new TranslationalVelConstraint(100))
                 .build();
 
-        Action park = drive.actionBuilder(new Pose2d(-13, -14, -Math.toRadians(135)))
-                .strafeTo(new Vector2d(-15, -20),new TranslationalVelConstraint(100))
+        Action park = drive.actionBuilder(new Pose2d(-13, -14, Math.toRadians(-135)))
+                .strafeTo(new Vector2d(10, -50), new TranslationalVelConstraint(100))
                 .build();
 
         Actions.runBlocking(robot.gateClose());

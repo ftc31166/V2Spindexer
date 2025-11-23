@@ -20,7 +20,7 @@ public class Constants {
     public static final  double GATEOPEN  = 0.0;
     public static final  double GATECLOSE  = 0.3;
     public static final  double BALLHOLDERUP  = 0.2;
-    public static final  double BALLHOLDERDOWN  = 0;
+    public static final  double BALLHOLDERDOWN  = 0.00;
 
 
 

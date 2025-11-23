@@ -21,10 +21,8 @@ import org.firstinspires.ftc.teamcode.AutonFuncs;
 import org.firstinspires.ftc.teamcode.moreTuning.MecanumDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
-//import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
-
 @Config
-@Autonomous(name = "RedClose", group = "Autonomous")
+@Autonomous(name = "BlueClose_Inverted", group = "Autonomous")
 public class RedClose extends LinearOpMode {
 
     private Pose2d curPos;
@@ -33,77 +31,99 @@ public class RedClose extends LinearOpMode {
     @Override
     public void runOpMode() {
         AutonFuncs robot = new AutonFuncs(hardwareMap);
+
+        // *** X-axis inversion = flip Y signs AND angle signs ***
         Pose2d initPose = new Pose2d(-52, 52, Math.toRadians(135));
         PinpointDrive drive = new PinpointDrive(hardwareMap, initPose);
 
         curPos = drive.pose;
         curDistance = 0;
 
-    
         Action scorePreload = drive.actionBuilder(initPose)
                 .stopAndAdd(robot.flywheelOn())
                 .stopAndAdd(robot.gateOpen())
+
                 .setTangent(Math.toRadians(-45))
-                .splineToConstantHeading(new Vector2d(-13, 14), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(-14, 15), Math.toRadians(-45), new TranslationalVelConstraint(100))
+
                 .stopAndAdd(robot.intakeOn())
-                .stopAndAdd(new SleepAction(2))
-                .strafeTo(new Vector2d(-15, 16))
-                .strafeTo(new Vector2d(-13, 14))
+                .stopAndAdd(new SleepAction(1))
+                .stopAndAdd(robot.intakeRev())
+                .stopAndAdd(new SleepAction(0.2))
+                .stopAndAdd(robot.intakeOn())
+
+                .strafeTo(new Vector2d(-15, 16), new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-13, 14), new TranslationalVelConstraint(100))
                 .build();
 
-        Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), initPose.heading))
+        Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), Math.toRadians(135)))
                 .stopAndAdd(robot.gateClose())
                 .stopAndAdd(robot.ballOpen())
+                .setTangent(45)
+                .splineToLinearHeading(new Pose2d(-14, 12, Math.toRadians(90)), Math.toRadians(90), new TranslationalVelConstraint(100))
 
-                .splineToLinearHeading(new Pose2d(-14, 10, Math.toRadians(90)), Math.toRadians(90))
-                .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-14, 65), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-14, 56), Math.toRadians(90))
+
                 .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.ballClose())
                 .stopAndAdd(robot.intakeOff())
-
+                .stopAndAdd(new SleepAction(0.5))
                 .build();
 
-        Action goToScoreFirstSet = drive.actionBuilder(new Pose2d(-14, 65, Math.toRadians(90)))
-                .setTangent(Math.toRadians(-90))
-                .splineToSplineHeading(new Pose2d(-15, 20, Math.toRadians(135)), Math.toRadians(-90))
-                .splineToLinearHeading(new Pose2d(-13, 14, Math.toRadians(135)), Math.toRadians(135))
+        Action goToScoreFirstSet = drive.actionBuilder(new Pose2d(-14, 56, Math.toRadians(90)))
+
+                .splineToSplineHeading(new Pose2d(-15, 20, Math.toRadians(135)), Math.toRadians(-90), new TranslationalVelConstraint(100))
+                .splineToLinearHeading(new Pose2d(-13, 14, Math.toRadians(135)), Math.toRadians(135), new TranslationalVelConstraint(100))
+
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
-                .stopAndAdd(new SleepAction(2))
-                .strafeTo(new Vector2d(-15, 16))
-                .strafeTo(new Vector2d(-13, 14))
+                .stopAndAdd(new SleepAction(1))
+                .stopAndAdd(robot.intakeRev())
+                .stopAndAdd(new SleepAction(0.2))
+                .stopAndAdd(robot.intakeOn())
+
+                .strafeTo(new Vector2d(-16, 17), new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-13, 14), new TranslationalVelConstraint(100))
                 .build();
 
         Action intakeSecondSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), Math.toRadians(135)))
                 .stopAndAdd(robot.gateClose())
                 .stopAndAdd(robot.ballOpen())
-                .setTangent(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(12, 10, Math.toRadians(90)), Math.toRadians(90))
+
+                .setTangent(Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(13, 12), Math.toRadians(90))
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(10, 78), Math.toRadians(90))
-                .stopAndAdd( new SleepAction(1))
+                .splineToConstantHeading(new Vector2d(13, 63), Math.toRadians(90))
+
+                .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.ballClose())
                 .stopAndAdd(robot.intakeOff())
-
+                .stopAndAdd(new SleepAction(0.5))
                 .build();
 
-        Action goToScoreSecondSet = drive.actionBuilder(new Pose2d(10, 78, Math.toRadians(90)))
+        Action goToScoreSecondSet = drive.actionBuilder(new Pose2d(12, 63, Math.toRadians(90)))
                 .setTangent(Math.toRadians(-90))
-                .splineToLinearHeading(new Pose2d(-13, 14, Math.toRadians(135)), Math.toRadians(45)).stopAndAdd(robot.intakeOff())
+
+                .splineToLinearHeading(new Pose2d(-14, 15, Math.toRadians(135)), Math.toRadians(45), new TranslationalVelConstraint(100))
+                .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
-                .stopAndAdd(new SleepAction(2))
-                .strafeTo(new Vector2d(-15, 16))
-                .strafeTo(new Vector2d(-13, 14))
+                .stopAndAdd(new SleepAction(1))
+                .stopAndAdd(robot.intakeRev())
+                .stopAndAdd(new SleepAction(0.2))
+                .stopAndAdd(robot.intakeOn())
+
+                .strafeTo(new Vector2d(-16, 17), new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(-13, 14), new TranslationalVelConstraint(100))
                 .build();
 
         Action park = drive.actionBuilder(new Pose2d(-13, 14, Math.toRadians(135)))
-                .splineToLinearHeading(new Pose2d(-15, 20,Math.toRadians(90)),Math.toRadians(90))
+                .strafeTo(new Vector2d(10, 50), new TranslationalVelConstraint(100))
                 .build();
 
         Actions.runBlocking(robot.gateClose());
         Actions.runBlocking(robot.ballClose());
+
         waitForStart();
 
         Actions.runBlocking(
