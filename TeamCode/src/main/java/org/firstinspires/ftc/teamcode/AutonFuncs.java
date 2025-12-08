@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class AutonFuncs  {
@@ -80,8 +79,8 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.flywheel.setPower(Constants.SHOOTFAR);
-                robot.flywheel2.setPower(Constants.SHOOTFAR);
+                robot.flywheel.setPower(Constants.SHOOTCLOSE);
+                robot.flywheel2.setPower(Constants.SHOOTCLOSE);
                 return false;
             }
         };

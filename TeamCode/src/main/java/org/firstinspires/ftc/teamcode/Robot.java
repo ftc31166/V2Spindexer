@@ -18,9 +18,12 @@ public class Robot {
         gate = hardwareMap.get(Servo.class, "gate");
         ballHolder = hardwareMap.get(Servo.class, "ball");
         flywheel2 = hardwareMap.get(DcMotor.class, "fly2");
-        flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         ballHolder.setPosition(Constants.BALLHOLDERUP);
         gate.setPosition(Constants.GATECLOSE);
+    }
+    public void pid1(){
+        while(flywheel.getPower() )
     }
 
 }

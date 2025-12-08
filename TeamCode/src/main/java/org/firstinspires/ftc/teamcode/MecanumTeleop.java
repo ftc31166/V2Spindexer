@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -77,8 +76,8 @@ public class MecanumTeleop extends LinearOpMode {
             }
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);
-                robot.flywheel.setPower(Constants.SHOOTFAR);
-                robot.flywheel2.setPower(Constants.SHOOTFAR);
+                robot.flywheel.setPower(Constants.SHOOTCLOSE);
+                robot.flywheel2.setPower(Constants.SHOOTCLOSE);
             }
             if(gamepad1.left_trigger>0){
                 robot.gate.setPosition(Constants.GATECLOSE);

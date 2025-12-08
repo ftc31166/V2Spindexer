@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
@@ -22,7 +20,7 @@ public class RobotTeleop extends LinearOpMode {
         Robot robot = new Robot(hardwareMap);
 
 
-        ElapsedTime timer = new ElapsedTime();
+        ElapsedTime errorTimer = new ElapsedTime();
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -39,6 +37,8 @@ public class RobotTeleop extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        double counter = 0;
+        boolean rightBumper = false;
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -60,18 +60,30 @@ public class RobotTeleop extends LinearOpMode {
             }
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);
-                robot.flywheel.setPower(Constants.SHOOTFAR);
-                robot.flywheel2.setPower(Constants.SHOOTFAR);
+                robot.flywheel.setPower(Constants.SHOOTCLOSE);
+                robot.flywheel2.setPower(Constants.SHOOTCLOSE);
+
             }
             if(gamepad1.left_trigger>0){
                 robot.gate.setPosition(Constants.GATECLOSE);
                 robot.flywheel.setPower(0);
                 robot.flywheel2.setPower(0);
+                rightBumper = false;
             }
             if(gamepad1.right_bumper){
                 robot.intake.setPower(Constants.INTAKEINPOWER);
+                robot.gate.setPosition(Constants.GATEOPEN);
+                rightBumper = true;
 
             }
+            if(rightBumper){
+                robot.gate.setPosition(Constants.GATEOPEN+.1*Math.sin(Math.toRadians(counter)));
+            }
+            counter += 1;
+            if(counter==360){
+                counter=0;
+            }
+
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
