@@ -6,6 +6,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Constants;
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
+
 public class AutonFuncs  {
     Robot robot;
     public AutonFuncs(HardwareMap hardwareMap){
@@ -61,7 +64,7 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.ballHolder.setPosition(Constants.BALLHOLDERUP);
+                robot.frontGate.setPosition(Constants.BALLHOLDERUP);
                 return false;
             }
         };
@@ -70,7 +73,7 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.ballHolder.setPosition(Constants.BALLHOLDERDOWN);
+                robot.frontGate.setPosition(Constants.BALLHOLDERDOWN);
                 return false;
             }
         };
@@ -79,7 +82,7 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.flywheel.setPower(Constants.SHOOTCLOSE);
+                robot.flywheel1.setPower(Constants.SHOOTCLOSE);
                 robot.flywheel2.setPower(Constants.SHOOTCLOSE);
                 return false;
             }
@@ -89,7 +92,7 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.flywheel.setPower(0);
+                robot.flywheel1.setPower(0);
                 robot.flywheel2.setPower(0);
                 return false;
             }

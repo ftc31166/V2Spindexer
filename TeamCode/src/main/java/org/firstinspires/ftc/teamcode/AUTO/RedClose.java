@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.AutonFuncs;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants;
 import org.firstinspires.ftc.teamcode.moreTuning.MecanumDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
@@ -136,5 +137,6 @@ public class RedClose extends LinearOpMode {
                         park
                 )
         );
+        Constants.endPose = drive.pose;
     }
 }

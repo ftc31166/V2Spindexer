@@ -1,30 +1,31 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.telops;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
+import org.firstinspires.ftc.teamcode.Subsystems.Constants;
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
+import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
 @TeleOp
-public class MecanumTeleop extends LinearOpMode {
+public class RobotTeleopRed extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
-        Robot robot = new Robot(hardwareMap);
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("fl");
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("bl");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("fr");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("br");
+        Robot robot = new Robot(hardwareMap);
 
-        ElapsedTime timer = new ElapsedTime();
+
+
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -32,78 +33,81 @@ public class MecanumTeleop extends LinearOpMode {
         // See the note about this earlier on this page.
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // Retrieve the IMU from the hardware map
-        IMU imu = hardwareMap.get(IMU.class, "imu");
-        // Adjust the orientation parameters to match your robot
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-        imu.initialize(parameters);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
+        double counter = 0;
+        boolean rightBumper = false;
+        boolean rightTrigger = false;
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x;
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
-
-            // This button choice was made so that it is hard to hit on accident,
-            // it can be freely changed based on preference.
-            // The equivalent button is start on Xbox-style controllers.
-
-            if (gamepad1.start) {//resets heading
-                imu.resetYaw();
+            PinpointDrive drive = new PinpointDrive(hardwareMap, Constants.endPose);
+            if(gamepad1.dpad_down){
+                Actions.runBlocking(drive.actionBuilder(drive.pose).splineToLinearHeading(new Pose2d(30,10,0),0).build());
             }
 
-
             if(gamepad1.a){
+                robot.frontGate.setPosition(Constants.BALLHOLDERUP);
                 robot.intake.setPower(Constants.INTAKEINPOWER);
                 robot.gate.setPosition(Constants.GATECLOSE);
+
             }
             if (gamepad1.x){
                 robot.intake.setPower(-Constants.INTAKEINPOWER);
             }
             if (gamepad1.b){
                 robot.intake.setPower(0);
+                robot.frontGate.setPosition(Constants.BALLHOLDERDOWN);
             }
+
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);
-                robot.flywheel.setPower(Constants.SHOOTCLOSE);
-                robot.flywheel2.setPower(Constants.SHOOTCLOSE);
+                robot.shootClose();
+                rightTrigger = true;
             }
             if(gamepad1.left_trigger>0){
                 robot.gate.setPosition(Constants.GATECLOSE);
-                robot.flywheel.setPower(0);
-                robot.flywheel2.setPower(0);
+                robot.stop();
+                rightBumper = false;
+                rightTrigger = false;
             }
             if(gamepad1.right_bumper){
                 robot.intake.setPower(Constants.INTAKEINPOWER);
+                robot.gate.setPosition(Constants.GATEOPEN);
+                rightBumper = true;
 
             }
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-            // Rotate the movement direction counter to the bot's rotation
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+            if(rightTrigger){
+                double turnTo = Math.atan2((Constants.redGoal.position.y - drive.pose.position.y),(Constants.redGoal.position.x - drive.pose.position.x)) ;
+                Actions.runBlocking(drive.actionBuilder(drive.pose).turnTo(turnTo).build());
+            }
 
-            rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+            if(rightBumper){
+                robot.gate.setPosition(Constants.GATEOPEN+.1*Math.sin(Math.toRadians(counter)));
+            }
+            counter += 1;
+            if(counter==360){
+                counter=0;
+            }
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
 
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
