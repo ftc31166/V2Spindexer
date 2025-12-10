@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
+
 @Config
 @Autonomous(name = "SampleAuto", group = "Autonomous")
 public class SampleAuto extends LinearOpMode {

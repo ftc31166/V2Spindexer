@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.telops;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
@@ -39,19 +41,26 @@ public class RobotTeleopRed extends LinearOpMode {
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
-
+        PinpointDrive drive = new PinpointDrive(hardwareMap, Constants.endPose);
         if (isStopRequested()) return;
 
         double counter = 0;
         boolean rightBumper = false;
         boolean rightTrigger = false;
         while (opModeIsActive()) {
+            drive.updatePoseEstimate();
+
+            // Read pose
+
+
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
-            PinpointDrive drive = new PinpointDrive(hardwareMap, Constants.endPose);
+
+
+            double turnTo = Math.atan2((Constants.redGoal.position.y - drive.pose.position.y),(Constants.redGoal.position.x - drive.pose.position.x)) ;
             if(gamepad1.dpad_down){
-                Actions.runBlocking(drive.actionBuilder(drive.pose).splineToLinearHeading(new Pose2d(30,10,0),0).build());
+                Actions.runBlocking(drive.actionBuilder(drive.poseHistory.getLast()).splineToLinearHeading(new Pose2d(30,10,0),0).build());
             }
 
             if(gamepad1.a){
@@ -86,8 +95,7 @@ public class RobotTeleopRed extends LinearOpMode {
 
             }
 
-            if(rightTrigger){
-                double turnTo = Math.atan2((Constants.redGoal.position.y - drive.pose.position.y),(Constants.redGoal.position.x - drive.pose.position.x)) ;
+            if(rightTrigger && (drive.pose.heading.toDouble() != turnTo)){
                 Actions.runBlocking(drive.actionBuilder(drive.pose).turnTo(turnTo).build());
             }
 
@@ -113,6 +121,8 @@ public class RobotTeleopRed extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+            telemetry.addData("pose", drive.pose);
+            telemetry.update();
         }
     }
 }
