@@ -25,10 +25,10 @@ public class Robot {
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         PIDFCoefficients pidf = new PIDFCoefficients(
-                70.0,   // P
+                100,   // P
                 0.0,    // I
-                8.0,    // D
-                15.0    // F
+                20,    // D
+                200  // F
         );
 
         flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);

@@ -82,8 +82,7 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.flywheel1.setPower(Constants.SHOOTCLOSE);
-                robot.flywheel2.setPower(Constants.SHOOTCLOSE);
+                robot.shootClose();
                 return false;
             }
         };
@@ -92,8 +91,7 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.flywheel1.setPower(0);
-                robot.flywheel2.setPower(0);
+                robot.stop();
                 return false;
             }
         };

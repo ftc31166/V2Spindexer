@@ -34,7 +34,7 @@ public class RedClose extends LinearOpMode {
         AutonFuncs robot = new AutonFuncs(hardwareMap);
 
         // *** X-axis inversion = flip Y signs AND angle signs ***
-        Pose2d initPose = new Pose2d(-52, 52, Math.toRadians(135));
+        Pose2d initPose = new Pose2d(-52, 52, Math.toRadians(130));
         PinpointDrive drive = new PinpointDrive(hardwareMap, initPose);
 
         curPos = drive.pose;
@@ -45,8 +45,7 @@ public class RedClose extends LinearOpMode {
                 .stopAndAdd(robot.gateOpen())
 
                 .setTangent(Math.toRadians(-45))
-                .splineToConstantHeading(new Vector2d(-14, 15), Math.toRadians(-45), new TranslationalVelConstraint(100))
-
+                .splineToLinearHeading(new Pose2d(-14, 15,Math.toRadians(135)), Math.toRadians(-45), new TranslationalVelConstraint(100))
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(1))
                 .stopAndAdd(robot.intakeRev())
@@ -63,10 +62,11 @@ public class RedClose extends LinearOpMode {
                 .setTangent(45)
                 .splineToLinearHeading(new Pose2d(-14, 12, Math.toRadians(90)), Math.toRadians(90), new TranslationalVelConstraint(100))
 
-                .splineToConstantHeading(new Vector2d(-14, 56), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-14, 50), Math.toRadians(90))
 
                 .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.ballClose())
+                .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(new SleepAction(0.5))
                 .build();
@@ -94,10 +94,11 @@ public class RedClose extends LinearOpMode {
                 .setTangent(Math.toRadians(45))
                 .strafeToLinearHeading(new Vector2d(13, 12), Math.toRadians(90))
                 .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(13, 63), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(13, 50), Math.toRadians(90))
 
                 .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.ballClose())
+                .stopAndAdd(new SleepAction(0.5))
                 .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(new SleepAction(0.5))
                 .build();
