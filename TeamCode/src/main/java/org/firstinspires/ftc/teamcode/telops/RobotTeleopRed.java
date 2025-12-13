@@ -41,16 +41,14 @@ public class RobotTeleopRed extends LinearOpMode {
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
-        PinpointDrive drive = new PinpointDrive(hardwareMap, Constants.endPose);
         if (isStopRequested()) return;
 
         double counter = 0;
         boolean rightBumper = false;
-        boolean rightTrigger = false;
-        while (opModeIsActive()) {
-            drive.updatePoseEstimate();
 
-            // Read pose
+        while (opModeIsActive()) {
+
+
 
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -58,10 +56,7 @@ public class RobotTeleopRed extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
 
 
-            double turnTo = Math.atan2((Constants.redGoal.position.y - drive.pose.position.y),(Constants.redGoal.position.x - drive.pose.position.x)) ;
-            if(gamepad1.dpad_down){
-                Actions.runBlocking(drive.actionBuilder(drive.poseHistory.getLast()).splineToLinearHeading(new Pose2d(30,10,0),0).build());
-            }
+
 
             if(gamepad1.a){
                 robot.frontGate.setPosition(Constants.BALLHOLDERUP);
@@ -80,13 +75,13 @@ public class RobotTeleopRed extends LinearOpMode {
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);
                 robot.shootClose();
-                rightTrigger = true;
+
             }
             if(gamepad1.left_trigger>0){
                 robot.gate.setPosition(Constants.GATECLOSE);
                 robot.stop();
                 rightBumper = false;
-                rightTrigger = false;
+
             }
             if(gamepad1.right_bumper){
                 robot.intake.setPower(Constants.INTAKEINPOWER);
@@ -95,15 +90,13 @@ public class RobotTeleopRed extends LinearOpMode {
 
             }
 
-            if(rightTrigger && (drive.pose.heading.toDouble() != turnTo)){
-                Actions.runBlocking(drive.actionBuilder(drive.pose).turnTo(turnTo).build());
-            }
+
 
 
             if(rightBumper){
-                robot.gate.setPosition(Constants.GATEOPEN+.1*Math.sin(Math.toRadians(counter)));
+                robot.gate.setPosition(Constants.GATEOPEN+.12*Math.sin(Math.toRadians(counter)));
             }
-            counter += 1;
+            counter += 3;
             if(counter==360){
                 counter=0;
             }
@@ -121,8 +114,8 @@ public class RobotTeleopRed extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
-            telemetry.addData("pose", drive.pose);
-            telemetry.update();
+
+
         }
     }
 }

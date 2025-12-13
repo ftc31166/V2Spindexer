@@ -31,10 +31,11 @@ public class RedClose extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        AutonFuncs robot = new AutonFuncs(hardwareMap);
+
 
         // *** X-axis inversion = flip Y signs AND angle signs ***
         Pose2d initPose = new Pose2d(-52, 52, Math.toRadians(130));
+        AutonFuncs robot = new AutonFuncs(hardwareMap, initPose);
         PinpointDrive drive = new PinpointDrive(hardwareMap, initPose);
 
         curPos = drive.pose;
@@ -42,7 +43,6 @@ public class RedClose extends LinearOpMode {
 
         Action scorePreload = drive.actionBuilder(initPose)
                 .stopAndAdd(robot.flywheelOn())
-                .stopAndAdd(robot.gateOpen())
 
                 .setTangent(Math.toRadians(-45))
                 .splineToLinearHeading(new Pose2d(-14, 15,Math.toRadians(135)), Math.toRadians(-45), new TranslationalVelConstraint(100))
@@ -57,7 +57,6 @@ public class RedClose extends LinearOpMode {
                 .build();
 
         Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), Math.toRadians(135)))
-                .stopAndAdd(robot.gateClose())
                 .stopAndAdd(robot.ballOpen())
                 .setTangent(45)
                 .splineToLinearHeading(new Pose2d(-14, 12, Math.toRadians(90)), Math.toRadians(90), new TranslationalVelConstraint(100))
@@ -76,7 +75,6 @@ public class RedClose extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(-15, 20, Math.toRadians(135)), Math.toRadians(-90), new TranslationalVelConstraint(100))
                 .splineToLinearHeading(new Pose2d(-13, 14, Math.toRadians(135)), Math.toRadians(135), new TranslationalVelConstraint(100))
 
-                .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(1))
                 .stopAndAdd(robot.intakeRev())
@@ -88,7 +86,6 @@ public class RedClose extends LinearOpMode {
                 .build();
 
         Action intakeSecondSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), Math.toRadians(135)))
-                .stopAndAdd(robot.gateClose())
                 .stopAndAdd(robot.ballOpen())
 
                 .setTangent(Math.toRadians(45))
@@ -108,7 +105,6 @@ public class RedClose extends LinearOpMode {
 
                 .splineToLinearHeading(new Pose2d(-14, 15, Math.toRadians(135)), Math.toRadians(45), new TranslationalVelConstraint(100))
                 .stopAndAdd(robot.intakeOff())
-                .stopAndAdd(robot.gateOpen())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(1))
                 .stopAndAdd(robot.intakeRev())
@@ -123,7 +119,7 @@ public class RedClose extends LinearOpMode {
                 .strafeTo(new Vector2d(10, 50), new TranslationalVelConstraint(100))
                 .build();
 
-        Actions.runBlocking(robot.gateClose());
+
         Actions.runBlocking(robot.ballClose());
 
         waitForStart();
@@ -139,5 +135,8 @@ public class RedClose extends LinearOpMode {
                 )
         );
         Constants.endPose = drive.pose;
+        while (opModeIsActive()){
+            robot.update();
+        }
     }
 }
