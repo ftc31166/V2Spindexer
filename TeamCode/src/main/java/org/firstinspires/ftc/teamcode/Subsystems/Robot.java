@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Robot {
     public DcMotorEx flywheel1,flywheel2,intake;
-    public Servo frontGate, gate;
+    public Servo frontGate, gate, oBlock;
 
     public Robot(HardwareMap hardwareMap){
         flywheel1 = hardwareMap.get(DcMotorEx.class,"fly1" );
@@ -18,6 +18,7 @@ public class Robot {
         intake = hardwareMap.get(DcMotorEx.class, "in");
         frontGate = hardwareMap.get(Servo.class, "front");
         gate = hardwareMap.get(Servo.class, "gate");
+        oBlock = hardwareMap.get(Servo.class, "hood");
         flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheel1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         flywheel2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

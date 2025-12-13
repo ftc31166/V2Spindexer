@@ -6,7 +6,7 @@ public class Constants {
     public static final  double INTAKEINPOWER  = -1;
     public static final  double INTAKEOUTPOWER  = 0.7;
 
-
+    public static final double DEFULT = 0;
     public static final  double SHOOTCLOSE = 1;
 
     public static final  double GATEOPEN  = 0.12;
@@ -21,7 +21,6 @@ public class Constants {
     public static Pose2d endPose = new Pose2d(0,0,0);
     public static final Pose2d redGoal = new Pose2d(-64,64,0);
     public static final Pose2d blueGoal = new Pose2d(-64,-64,0);
-
 
 
 }
