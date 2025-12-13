@@ -92,10 +92,10 @@ public class RobotTeleopBlue extends LinearOpMode {
             }
 
 
-            if(rightBumper){
-                robot.gate.setPosition(Constants.GATEOPEN+.1*Math.sin(Math.toRadians(counter)));
+            if(rightBumper) {
+                robot.gate.setPosition(Constants.GATEOPEN + .1 * Math.sin(Math.toRadians(counter)));
+                counter += 1;
             }
-            counter += 1;
             if(counter==360){
                 counter=0;
             }
