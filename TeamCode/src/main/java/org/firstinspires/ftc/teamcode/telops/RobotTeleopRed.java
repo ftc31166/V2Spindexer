@@ -43,6 +43,7 @@ public class RobotTeleopRed extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
 
+        robot.oBlock.setPosition(Constants.DEFAULT);
         double counter = 0;
         boolean rightBumper = false;
 

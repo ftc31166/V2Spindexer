@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.moreTuning.MecanumDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
 @Config
-@Autonomous(name = "BlueClose_Inverted", group = "Autonomous")
+@Autonomous(name = "RedClose", group = "Autonomous")
 public class RedClose extends LinearOpMode {
 
     private Pose2d curPos;
@@ -120,7 +120,7 @@ public class RedClose extends LinearOpMode {
                 .build();
 
 
-        Actions.runBlocking(robot.ballClose());
+        Actions.runBlocking(robot.ballClose());Actions.runBlocking(robot.hood());
 
         waitForStart();
 

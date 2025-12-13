@@ -87,6 +87,16 @@ public class AutonFuncs  {
         };
     }
 
+    public Action hood(){
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.oBlock.setPosition(Constants.DEFAULT);
+                return false;
+            }
+        };
+    }
+
     public void update() {
 
         // Flywheel running?
