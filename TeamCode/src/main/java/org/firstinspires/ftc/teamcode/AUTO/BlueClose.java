@@ -58,7 +58,7 @@ public class BlueClose extends LinearOpMode {
 
         Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, -14), Math.toRadians(-135)))
                 .stopAndAdd(robot.ballOpen())
-                .setTangent(-45)
+                .setTangent(45)
                 .splineToLinearHeading(new Pose2d(-14, -12, Math.toRadians(-90)), Math.toRadians(-90), new TranslationalVelConstraint(100))
 
                 .splineToConstantHeading(new Vector2d(-14, -50), Math.toRadians(-90))
@@ -101,9 +101,9 @@ public class BlueClose extends LinearOpMode {
                 .build();
 
         Action goToScoreSecondSet = drive.actionBuilder(new Pose2d(12, -63, Math.toRadians(-90)))
-                .setTangent(Math.toRadians(90))
+                .setTangent(Math.toRadians(-90))
 
-                .splineToLinearHeading(new Pose2d(-14, -15, Math.toRadians(-135)), Math.toRadians(-45), new TranslationalVelConstraint(100))
+                .splineToLinearHeading(new Pose2d(-14, 15, Math.toRadians(135)), Math.toRadians(45), new TranslationalVelConstraint(100))
                 .stopAndAdd(robot.intakeOff())
                 .stopAndAdd(robot.intakeOn())
                 .stopAndAdd(new SleepAction(1))
