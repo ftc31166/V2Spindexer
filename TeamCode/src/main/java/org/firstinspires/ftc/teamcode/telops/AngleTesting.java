@@ -1,21 +1,16 @@
 package org.firstinspires.ftc.teamcode.telops;
 
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
 @TeleOp
-public class RobotTeleopRed extends LinearOpMode {
+public class AngleTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -73,16 +68,15 @@ public class RobotTeleopRed extends LinearOpMode {
                 robot.intake.setPower(0);
                 robot.frontGate.setPosition(Constants.BALLHOLDERDOWN);
             }
-
             if (gamepad1.dpad_up && timer.milliseconds() > 300){
-                robot.oBlock.setPosition(Constants.SHOOTFAR);
-                if(robot.oBlock.getPosition() > 1){
+                robot.oBlock.setPosition(robot.oBlock.getPosition()+.05);
+                if(robot.oBlock.getPosition() > 1) {
                     robot.oBlock.setPosition(1);
                 }
                 timer.reset();
             }
             if (gamepad1.dpad_down && timer.milliseconds() > 300){
-                robot.oBlock.setPosition(Constants.DEFAULT);
+                robot.oBlock.setPosition(robot.oBlock.getPosition()-.05);
                 if(robot.oBlock.getPosition() < 0.8){
                     robot.oBlock.setPosition(0.8);
                 }
@@ -90,12 +84,7 @@ public class RobotTeleopRed extends LinearOpMode {
             }
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);
-                if(robot.oBlock.getPosition() == Constants.DEFAULT){
-                    robot.shootFar();
-                }else{
-                    robot.shootClose();
-                }
-
+                robot.shootClose();
 
             }
             if(gamepad1.left_trigger>0){
@@ -108,7 +97,6 @@ public class RobotTeleopRed extends LinearOpMode {
                 robot.intake.setPower(Constants.INTAKEINPOWER);
                 robot.gate.setPosition(Constants.GATEOPEN);
                 rightBumper = true;
-                counter=0;
 
             }
 
@@ -116,11 +104,9 @@ public class RobotTeleopRed extends LinearOpMode {
 
 
             if(rightBumper){
-
-                robot.gate.setPosition(Constants.GATEOPEN-.15*Math.cos(Math.toRadians(counter)));
-                counter += 1;
+                robot.gate.setPosition(Constants.GATEOPEN+.12*Math.sin(Math.toRadians(counter)));
             }
-
+            counter += 1;
 
             if(counter==360){
                 counter=0;

@@ -48,18 +48,13 @@ public class RedClose extends LinearOpMode {
 
                 .setTangent(Math.toRadians(-45))
                 .splineToLinearHeading(new Pose2d(-14, 15,Math.toRadians(135)), Math.toRadians(-45), new TranslationalVelConstraint(100))
-                .stopAndAdd(robot.intakeOn())
-                .stopAndAdd(new SleepAction(1))
-                .stopAndAdd(robot.intakeRev())
-                .stopAndAdd(new SleepAction(0.2))
-                .stopAndAdd(robot.intakeOn())
 
-                .strafeTo(new Vector2d(-15, 16), new TranslationalVelConstraint(100))
-                .strafeTo(new Vector2d(-13, 14), new TranslationalVelConstraint(100))
                 .build();
 
         Action intakeFirstSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), Math.toRadians(135)))
                 .stopAndAdd(robot.ballOpen())
+                .stopAndAdd(robot.intakeOnRet())
+
                 .setTangent(45)
                 .splineToLinearHeading(new Pose2d(-14, 12, Math.toRadians(90)), Math.toRadians(90), new TranslationalVelConstraint(100))
 
@@ -77,18 +72,13 @@ public class RedClose extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(-15, 20, Math.toRadians(135)), Math.toRadians(-90), new TranslationalVelConstraint(100))
                 .splineToLinearHeading(new Pose2d(-13, 14, Math.toRadians(135)), Math.toRadians(135), new TranslationalVelConstraint(100))
 
-                .stopAndAdd(robot.intakeOn())
-                .stopAndAdd(new SleepAction(1))
-                .stopAndAdd(robot.intakeRev())
-                .stopAndAdd(new SleepAction(0.2))
-                .stopAndAdd(robot.intakeOn())
 
-                .strafeTo(new Vector2d(-16, 17), new TranslationalVelConstraint(100))
-                .strafeTo(new Vector2d(-13, 14), new TranslationalVelConstraint(100))
                 .build();
 
         Action intakeSecondSet = drive.actionBuilder(new Pose2d(new Vector2d(-13, 14), Math.toRadians(135)))
                 .stopAndAdd(robot.ballOpen())
+                .stopAndAdd(robot.intakeOnRet())
+
 
                 .setTangent(Math.toRadians(45))
                 .strafeToLinearHeading(new Vector2d(13, 12), Math.toRadians(90))
@@ -106,15 +96,7 @@ public class RedClose extends LinearOpMode {
                 .setTangent(Math.toRadians(-90))
 
                 .splineToLinearHeading(new Pose2d(-14, 15, Math.toRadians(135)), Math.toRadians(45), new TranslationalVelConstraint(100))
-                .stopAndAdd(robot.intakeOff())
-                .stopAndAdd(robot.intakeOn())
-                .stopAndAdd(new SleepAction(1))
-                .stopAndAdd(robot.intakeRev())
-                .stopAndAdd(new SleepAction(0.2))
-                .stopAndAdd(robot.intakeOn())
 
-                .strafeTo(new Vector2d(-16, 17), new TranslationalVelConstraint(100))
-                .strafeTo(new Vector2d(-13, 14), new TranslationalVelConstraint(100))
                 .build();
 
         Action park = drive.actionBuilder(new Pose2d(-13, 14, Math.toRadians(135)))
@@ -126,29 +108,30 @@ public class RedClose extends LinearOpMode {
 
         waitForStart();
 
+
+
         Actions.runBlocking(
-                new SequentialAction(
+
+                        new SequentialAction(
                         scorePreload,
-                        intakeFirstSet,
+                        new RaceAction(robot.intakeOn(), robot.gateOscillate()),
+                       robot.gateClose(),
+
+                       intakeFirstSet,
                         goToScoreFirstSet,
-                        intakeSecondSet,
+                                new RaceAction(robot.intakeOn(), robot.gateOscillate()),
+                                robot.gateClose(),
+
+                                intakeSecondSet,
                         goToScoreSecondSet,
-                        park
+                                new RaceAction(robot.intakeOn(), robot.gateOscillate()),
+                                robot.gateClose(),
+
+                                park
                 )
+
         );
         Constants.endPose = drive.pose;
-        while (opModeIsActive()){
-            if (rbt. flywheel1.getVelocity() > 50) {
-                rbt.gate.setPosition(Constants.GATEOPEN + 0.12 * Math.sin(Math.toRadians(oscCounter)));
-                oscCounter += 5;
 
-            } else {
-                rbt.gate.setPosition(Constants.GATECLOSE);
-                oscCounter = 0; // reset wave
-            }
-            if (oscCounter == 360){
-                oscCounter =0;
-            }
-        }
     }
 }

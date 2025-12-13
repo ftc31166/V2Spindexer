@@ -26,10 +26,10 @@ public class Robot {
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         PIDFCoefficients pidf = new PIDFCoefficients(
-                100,   // P
+                500,   // P
                 0.0,    // I
                 20,    // D
-                200  // F
+                500  // F
         );
 
         flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
@@ -37,8 +37,12 @@ public class Robot {
     }
 
     public void shootClose(){
-        flywheel1.setVelocity(Constants.TICKS_PER_REV*Constants.SHOOTCLOSE*Constants.RPM/60);
-        flywheel2.setVelocity(Constants.TICKS_PER_REV*Constants.SHOOTCLOSE*Constants.RPM/60);
+        flywheel1.setVelocity(Constants.TICKS_PER_REV*Constants.RPM/60);
+        flywheel2.setVelocity(Constants.TICKS_PER_REV*Constants.RPM/60);
+    }
+    public void shootFar(){
+        flywheel1.setVelocity(Constants.TICKS_PER_REV*Constants.RPMFAR/60);
+        flywheel2.setVelocity(Constants.TICKS_PER_REV*Constants.RPMFAR/60);
     }
     public void stop(){
         flywheel1.setVelocity(0);

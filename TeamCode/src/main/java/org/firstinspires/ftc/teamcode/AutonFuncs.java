@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
@@ -22,6 +23,15 @@ public class AutonFuncs  {
     }
 
     public Action intakeOn(){
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.intake.setPower(Constants.INTAKEINPOWER);
+                return true;
+            }
+        };
+    }
+    public Action intakeOnRet(){
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -91,12 +101,42 @@ public class AutonFuncs  {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.oBlock.setPosition(Constants.DEFAULT);
+                robot.oBlock.setPosition(Constants.SHOOTFAR);
                 return false;
             }
         };
     }
 
+    public Action gateOscillate() {
+        ElapsedTime oscillate = new ElapsedTime();
+        oscillate.reset();
+        return new Action() {
 
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+
+
+                robot.gate.setPosition(Constants.GATEOPEN - 0.15 * Math.cos(Math.toRadians(oscCounter)));
+                    oscCounter+=5;
+
+                if(oscCounter >= 360){
+                    oscCounter = 0;
+                }
+
+                return oscillate.milliseconds()<5000;
+            }
+        };
+    }
+
+    public Action gateClose(){
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.gate.setPosition(Constants.GATECLOSE);
+                return false;
+            }
+        };
+    }
 }
 
