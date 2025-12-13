@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
 public class AutonFuncs  {
-    boolean oscillateGate = false;
+    ElapsedTime oscillate = new ElapsedTime();
     int oscCounter = 0;
     Robot robot;
     PinpointDrive drive;
@@ -108,7 +108,7 @@ public class AutonFuncs  {
     }
 
     public Action gateOscillate() {
-        ElapsedTime oscillate = new ElapsedTime();
+
         oscillate.reset();
         return new Action() {
 

@@ -47,6 +47,7 @@ public class RobotTeleopRed extends LinearOpMode {
         robot.oBlock.setPosition(Constants.DEFAULT);
         double counter = 0;
         boolean rightBumper = false;
+        double flyPower = Constants.POWERCLOSE;
 
         while (opModeIsActive()) {
 
@@ -74,23 +75,15 @@ public class RobotTeleopRed extends LinearOpMode {
                 robot.frontGate.setPosition(Constants.BALLHOLDERDOWN);
             }
 
-            if (gamepad1.dpad_up && timer.milliseconds() > 300){
-                robot.oBlock.setPosition(Constants.SHOOTFAR);
-                if(robot.oBlock.getPosition() > 1){
-                    robot.oBlock.setPosition(1);
-                }
-                timer.reset();
+            if (gamepad1.dpad_up){
+                flyPower = Constants.POWERFAR;
             }
-            if (gamepad1.dpad_down && timer.milliseconds() > 300){
-                robot.oBlock.setPosition(Constants.DEFAULT);
-                if(robot.oBlock.getPosition() < 0.8){
-                    robot.oBlock.setPosition(0.8);
-                }
-                timer.reset();
+            if (gamepad1.dpad_down){
+                flyPower = Constants.POWERCLOSE;
             }
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);
-                robot.shootClose();
+                robot.shootPower(flyPower);
 
 
             }
@@ -113,7 +106,7 @@ public class RobotTeleopRed extends LinearOpMode {
 
             if(rightBumper){
 
-                robot.gate.setPosition(Constants.GATEOPEN-.15*Math.cos(Math.toRadians(counter)));
+                robot.gate.setPosition(Constants.GATEOPEN-.12*Math.cos(Math.toRadians(counter)));
                 counter += 1;
             }
 

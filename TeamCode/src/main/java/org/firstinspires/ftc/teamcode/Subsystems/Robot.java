@@ -20,17 +20,34 @@ public class Robot {
         gate = hardwareMap.get(Servo.class, "gate");
         oBlock = hardwareMap.get(Servo.class, "hood");
         flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flywheel2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        PIDFCoefficients pidf = new PIDFCoefficients(
+                500,   // P
+                0.0,    // I
+                20,    // D
+                500  // F
+        );
+
+        flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        flywheel2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
     public void shootClose(){
-        flywheel1.setPower(Constants.POWERCLOSE);
-        flywheel2.setPower(Constants.POWERCLOSE);
+        flywheel1.setVelocity(Constants.TICKS_PER_REV*Constants.POWERCLOSE /60);
+        flywheel2.setVelocity(Constants.TICKS_PER_REV*Constants.POWERCLOSE /60);
+
     }
-    public void shootFar(){
-        flywheel1.setPower(Constants.POWERFAR);
-        flywheel2.setPower(Constants.POWERFAR);
+    public void shootPower(double powr){
+        flywheel1.setVelocity(Constants.TICKS_PER_REV*powr /60);
+        flywheel2.setVelocity(Constants.TICKS_PER_REV*powr /60);
+
     }
+
+
     public void stop(){
         flywheel1.setVelocity(0);
         flywheel2.setVelocity(0);
