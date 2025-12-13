@@ -90,11 +90,7 @@ public class RobotTeleopRed extends LinearOpMode {
             }
             if(gamepad1.right_trigger>0){
                 robot.gate.setPosition(Constants.GATEOPEN);
-                if(robot.oBlock.getPosition() == Constants.DEFAULT){
-                    robot.shootFar();
-                }else{
-                    robot.shootClose();
-                }
+                robot.shootClose();
 
 
             }
