@@ -97,28 +97,6 @@ public class AutonFuncs  {
         };
     }
 
-    public void update() {
 
-        // Flywheel running?
-        if (robot. flywheel1.getVelocity() > 50) {
-            oscillateGate = true;
-        } else {
-            oscillateGate = false;
-        }
-
-        // Oscillate only when enabled
-        if (oscillateGate) {
-            double pos = Constants.GATEOPEN + 0.12 * Math.sin(Math.toRadians(oscCounter));
-            robot.gate.setPosition(pos);
-            oscCounter += 5;
-
-        } else {
-            robot.gate.setPosition(Constants.GATECLOSE);
-            oscCounter = 0; // reset wave
-        }
-        if (oscCounter == 360){
-            oscCounter =0;
-        }
-    }
 }
 

@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.AutonFuncs;
 import org.firstinspires.ftc.teamcode.Subsystems.Constants;
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.moreTuning.MecanumDrive;
 import org.firstinspires.ftc.teamcode.moreTuning.PinpointDrive;
 
@@ -36,8 +37,9 @@ public class RedClose extends LinearOpMode {
         // *** X-axis inversion = flip Y signs AND angle signs ***
         Pose2d initPose = new Pose2d(-52, 52, Math.toRadians(130));
         AutonFuncs robot = new AutonFuncs(hardwareMap, initPose);
+        Robot rbt = new Robot(hardwareMap);
         PinpointDrive drive = new PinpointDrive(hardwareMap, initPose);
-
+        int oscCounter = 0;
         curPos = drive.pose;
         curDistance = 0;
 
@@ -136,7 +138,17 @@ public class RedClose extends LinearOpMode {
         );
         Constants.endPose = drive.pose;
         while (opModeIsActive()){
-            robot.update();
+            if (rbt. flywheel1.getVelocity() > 50) {
+                rbt.gate.setPosition(Constants.GATEOPEN + 0.12 * Math.sin(Math.toRadians(oscCounter)));
+                oscCounter += 5;
+
+            } else {
+                rbt.gate.setPosition(Constants.GATECLOSE);
+                oscCounter = 0; // reset wave
+            }
+            if (oscCounter == 360){
+                oscCounter =0;
+            }
         }
     }
 }
