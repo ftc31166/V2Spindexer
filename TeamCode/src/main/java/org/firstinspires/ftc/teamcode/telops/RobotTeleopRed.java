@@ -97,6 +97,7 @@ public class RobotTeleopRed extends LinearOpMode {
                 robot.gate.setPosition(Constants.GATEOPEN+.12*Math.sin(Math.toRadians(counter)));
             }
             counter += 3;
+
             if(counter==360){
                 counter=0;
             }
